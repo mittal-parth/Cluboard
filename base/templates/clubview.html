@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+
+{% block title %}{{club.club_name}}{% endblock title %}
+
+{% block body %}
+<div>
+    <h4>{{club.club_name}}</h4>
+    <img src="/media/{{club.logo}}" alt="">
+</div>
+{% endblock body %}

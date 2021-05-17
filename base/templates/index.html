@@ -6,13 +6,13 @@
 
 
 <div class="container">
-    <h3>Clubs</h3>
+    <h3 style="margin-top: 8px;">Clubs</h3>
     <div class="cards ">
         {% for club in clubs %}
-        <div class="card mx-4 my-4" style="width: 10rem; height: 15rem;">
+        <div class="card mx-3 my-5" style="width: 12rem; height: 15rem;">
             <img class="card-img-top" src="/media/{{club.logo}}">
             <div class="card-body">
-                <p class="card-title">{{club.club_name}}</p>
+                <p class="card-title"><a href="{% url 'clubview' club.id %}">{{club.club_name}}</p></a>
             </div>
         </div>
         {% endfor %}
