@@ -1,12 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h3>This is the home page</h3>
-</body>
-</html>
+{% extends 'main.html' %}
+
+{% block title %}Home{% endblock title %}
+
+{% block body %}
+
+
+<div class="container">
+    <h3>Clubs</h3>
+    <div class="cards ">
+        {% for club in clubs %}
+        <div class="card mx-4 my-4" style="width: 10rem; height: 15rem;">
+            <img class="card-img-top" src="/media/{{club.logo}}">
+            <div class="card-body">
+                <p class="card-title">{{club.club_name}}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+</div>
+{% endblock body %}
