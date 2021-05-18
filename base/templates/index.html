@@ -9,7 +9,7 @@
     <h3 style="margin-top: 8px;">Clubs</h3>
     <div class="cards ">
         {% for club in clubs %}
-        <div class="card mx-3 my-5" style="width: 12rem; height: 15rem;">
+        <div class="card mx-3 my-5" style="width: 12rem; height: 17rem;">
             <img class="card-img-top" src="/media/{{club.logo}}">
             <div class="card-body">
                 <p class="card-title"><a href="{% url 'clubview' club.id %}">{{club.club_name}}</p></a>

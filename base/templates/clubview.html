@@ -3,8 +3,19 @@
 {% block title %}{{club.club_name}}{% endblock title %}
 
 {% block body %}
-<div>
+<div class="mx-4 my-4">
     <h4>{{club.club_name}}</h4>
     <img src="/media/{{club.logo}}" alt="">
 </div>
+
+<h4 class="mx-4 my-4">Members</h4>
+{% for member in members %}
+<div class=" mx-4">
+    {{member.first_name}}
+</div>
+{% empty %}
+    <!--If there are no members-->
+    <p>No members yet!</p>
+{% endfor %}
+
 {% endblock body %}

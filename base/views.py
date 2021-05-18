@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from base.models import Club
+from django.contrib.auth.models import User
+
 # Create your views here.
 def index(request):
     clubs = Club.objects.all()
@@ -7,7 +9,9 @@ def index(request):
     return render(request, 'index.html',context)
 
 def clubview(request, pk):
-    club = Club.objects.filter(id = pk)
-    context = {'club': club[0]}
+    #Display all users belonging to that club
+    club = Club.objects.get(id = pk)
+    members = club.users.all()
+    context = {'club': club, 'members':members}
 
     return render(request, 'clubview.html', context)
