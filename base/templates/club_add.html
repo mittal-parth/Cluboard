@@ -1,0 +1,11 @@
+{% extends 'main.html' %}
+
+{% block title %}Add Club{% endblock title %}
+
+{% block body %}
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">Add Club</button>
+    </form>
+{% endblock body %}
