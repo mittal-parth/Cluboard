@@ -20,15 +20,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'clubview' club.id %}">Users</a>
+                        <a class="nav-link active" href="{% url 'club_view' club.id %}">Users</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Items</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Requests</a>
-                    </li>
-                    
+                        <a class="nav-link active" href="{% url 'items_view' club.id %}">Items</a>
+                    </li>                    
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -48,15 +44,17 @@
             <thead>
                 <tr>
                     <th scope="col">Name</th>
-
-                    <th scope="col">Handle</th>
+                    <th scope="col">Designation</th>
+                    <th scope="col">Roll No</th>
                 </tr>
             </thead>
             <tbody>
                 {% for member in members %}
                 <tr>
                     <td>{{member.first_name}} {{member.last_name}}</td>
-                    <td>@mdo</td>
+                    <td>{{member.info.designation}}</td>
+                    <td>{{member.info.roll_no}}</td>
+
                 </tr>
                 {% empty %}
                 <!--If there are no members-->

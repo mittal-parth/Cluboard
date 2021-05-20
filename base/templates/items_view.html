@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <title>{% block title %}{{club.club_name}} Items{% endblock title %}</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">InvManage</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'club_view' club.id %}">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'items_view' club.id %}">Items</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="accounts/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div>
+        {% for item in items %}
+        <div class="card" style="width: 220px;">
+            <img src="/media/{{item.image}}" class="card-img-top" alt="..." height="220px" width="220px">
+            <div class="card-body">
+                <h5 class="card-title">{{item.item_name}}</h5>
+                <p class="card-text">{{item.qty}}</p>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="container my-5">
+            {% for items, range, nSlides in all_items %}
+            <div id="carouselControls{{forloop.counter}}" class="carousel slide my-3" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <!-- Slide of the carousel -->
+                    <div class="carousel-item active">
+                        <div class="row">
+                            <!-- start a row of items-->
+                            {% for i in items|slice:"0:" %}
+
+                            <div class="col-xs-3 col-sm-3 col-md-3">
+                                <!-- This is second coloumn of that row-->
+                                <div class="card" style="width: 220px;">
+                                    <img src="/media/{{i.image}}" class="card-img-top" alt="..." height="220px"
+                                        width="220px">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{i.item_name}}</h5>
+                                        <p class="card-text">{{i.qty}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="row">
+                            {%endif%}
+                            {%endfor%}
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button"
+                    data-bs-target="#carouselControls{{forloop.counter}}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="false"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button"
+                    data-bs-target="#carouselControls{{forloop.counter}}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="false"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

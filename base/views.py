@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 from .forms import *
 
+from math import ceil
 # Create your views here.
 
 
@@ -27,10 +28,22 @@ def club_add(request):
     return render(request, 'club_add.html', context)
 
 
-def clubview(request, pk):
+def club_view(request, pk):
     # Display all users belonging to that club
     club = Club.objects.get(id=pk)
     members = club.users.all()
     context = {'club': club, 'members': members}
 
-    return render(request, 'clubview.html', context)
+    return render(request, 'club_view.html', context)
+
+def items_view(request, pk):
+    #Display all items belonging to that club as a carousel of cards
+    club = Club.objects.get(id=pk)
+    items = club.item_set.all()
+    all_items = []
+    n = len(items)
+    nSlides = n//4 + ceil(n/4-n//4) #logic for displaying slides
+    all_items.append([items, range(1, nSlides), nSlides])
+
+    context = {'club':club, 'all_items':all_items}
+    return render(request, 'items_view.html', context)

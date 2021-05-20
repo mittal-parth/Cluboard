@@ -5,5 +5,6 @@ from base import views
 urlpatterns = [
     path("", views.index, name="index"), 
     path("club_add/", views.club_add, name="club_add"), 
-    path("clubview/<int:pk>", views.clubview, name="clubview"), 
+    path("items_view/<int:pk>", views.items_view, name="items_view"), 
+    path("club_view/<int:pk>", views.club_view, name="club_view"), 
 ]

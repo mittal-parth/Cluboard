@@ -11,13 +11,14 @@ class Club(models.Model):
     def __str__(self):
         return self.club_name
 
-
-
 class Item(models.Model):
-    name = models.CharField(max_length=100)
+    item_name = models.CharField(max_length=100)
     qty = models.IntegerField()
-    club = models.ManyToManyField(Club, blank=True, null = True)
+    club = models.ForeignKey(Club, blank=True, null = True, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="images/", default = "")  
+
+    def __str__(self):
+        return self.item_name
 
 class Request(models.Model):
     STATUS = (('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected'))
