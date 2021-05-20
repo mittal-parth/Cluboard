@@ -11,10 +11,7 @@ class Club(models.Model):
     def __str__(self):
         return self.club_name
 
-class Info(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    designation = models.CharField(max_length=100, default="Member")
-    roll_no = models.CharField(max_length=100)
+
 
 class Item(models.Model):
     name = models.CharField(max_length=100)
