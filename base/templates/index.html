@@ -11,10 +11,10 @@
         
     </div>
     
-    <div class="cards ">
+    <div class="cards mx-0">
         {% for club in clubs %}
         <div class="card mx-3 my-5" style="width: 12rem; height: 17rem;">
-            <img class="card-img-top" src="/media/{{club.logo}}">
+            <img class="card-img-top" src="/media/{{club.logo}}" height="180px" width="180px">
             <div class="card-body">
                 <p class="card-title"><a href="{% url 'club_view' club.id %}">{{club.club_name}}</p></a>
             </div>
