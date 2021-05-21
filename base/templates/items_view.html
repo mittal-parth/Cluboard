@@ -4,7 +4,7 @@
 
 {% block body %}  
     <div>
-        <h3 class="my-3 mx-5">Items <a id="add-link" href="{% url 'item_add' club.id %}"><i class="fa fa-plus-circle"></i></a></h3>
+        <h3 class="my-3 mx-4">Items <a id="add-link" href="{% url 'item_add' club.id %}"><i class="fa fa-plus-circle"></i></a></h3>
     </div>
     <div class="container my-5">
         {% for items, range, nSlides in all_items %}
@@ -49,10 +49,43 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
+        {% empty %}
+        <p>No, items yet!</p>
         {% endfor %}
     </div>
     <div>
-        <h3 class="my-3 mx-5">Requests</h3>
+        <h3 class="my-3 mx-3">Requests</h3>
+    </div>
 
+    <div class="card card-body mx-4">
+        <table class="table ">
+            <thead>
+                <tr>
+                    <th scope="col">Requested By</th>
+                    <th scope="col">Roll No</th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Date Created</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in reqs %}
+                <tr>
+                    <td>{{ req.requested_by.first_name }} {{ req.requested_by.last_name }}</td>
+                    <td>{{ req.requested_by.info.roll_no }}</td>
+                    <td>{{ req.item|truncatewords:1  }}</td>
+                    <td>{{ req.qty }}</td>
+                    <td>{{ req.date_created }}</td>
+                    <td>{{ req.status }}</td>
+                </tr>
+                {% empty %}
+                <!--If there are no members-->
+                <tr>
+                    <td colspan="4">No members yet!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock body %}

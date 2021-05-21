@@ -52,6 +52,7 @@ def club_view(request, pk):
     return render(request, 'club_view.html', context)
 
 def items_view(request, pk):
+
     #Display all items belonging to that club as a carousel of cards
     club = Club.objects.get(id=pk)
     items = club.item_set.all()
@@ -60,5 +61,8 @@ def items_view(request, pk):
     nSlides = n//4 + ceil(n/4-n//4) #logic for displaying slides
     all_items.append([items, range(1, nSlides), nSlides])
 
-    context = {'club':club, 'all_items':all_items}
+    #Display all requests pertaining to that club
+    reqs = club.request_set.all()
+
+    context = {'club':club, 'all_items':all_items, 'reqs':reqs}
     return render(request, 'items_view.html', context)

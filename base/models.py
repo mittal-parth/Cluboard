@@ -18,13 +18,15 @@ class Item(models.Model):
     image = models.ImageField(upload_to="images/", default = "")  
 
     def __str__(self):
-        return self.item_name
-
+        return self.item_name + ' ' + self.club.club_name
 class Request(models.Model):
     STATUS = (('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected'))
     requested_by = models.ForeignKey(User, null=True, on_delete = models.SET_NULL)
+    club = models.ForeignKey(Club, blank=True, null = True, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, null=True, on_delete=models.SET_NULL)
-    status = models.CharField(max_length=100, null=True, choices=STATUS)
+    qty = models.IntegerField()
+    status = models.CharField(max_length=100, null=True, choices=STATUS, default='Pending')
     date_created = models.DateField(auto_now_add=True)
     
-
+    def __str__(self):
+        return self.requested_by.username + ' ' + self.item.item_name 
