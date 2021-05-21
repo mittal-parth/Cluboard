@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+
+{% block title %}Add Item{% endblock title %}
+
+{% block body %}
+<div class="mx-4 my-4">
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">Add Item</button>
+    </form>
+</div>
+{% endblock body %}

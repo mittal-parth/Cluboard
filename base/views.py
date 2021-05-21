@@ -28,6 +28,21 @@ def club_add(request):
     return render(request, 'club_add.html', context)
 
 
+def item_add(request, pk):
+
+    club = Club.objects.get(id=pk)
+    initial = {'club':club}
+    #Adding a new item
+    form = ItemForm(initial=initial)
+    if request.method == 'POST':
+        form = ItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    context = {'club':club, 'form':form}
+    return render(request, 'item_add.html', context)
+
+
 def club_view(request, pk):
     # Display all users belonging to that club
     club = Club.objects.get(id=pk)

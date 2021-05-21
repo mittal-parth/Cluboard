@@ -4,7 +4,7 @@
 
 {% block body %}  
     <div>
-        <h3 class="my-3 mx-5">Items<a id="add-link" href="{% url 'club_add' %}"><i class="fa fa-plus-circle"></i></a></h3>
+        <h3 class="my-3 mx-5">Items <a id="add-link" href="{% url 'item_add' club.id %}"><i class="fa fa-plus-circle"></i></a></h3>
     </div>
     <div class="container my-5">
         {% for items, range, nSlides in all_items %}
