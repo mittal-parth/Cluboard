@@ -34,6 +34,8 @@
                 <div class="carousel-item">
                     <div class="row">
                         {%endif%}
+                        {% empty %}
+                        <p>No items yet!</p>
                         {%endfor%}
                     </div>
                 </div>
@@ -49,8 +51,7 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-        {% empty %}
-        <p>No, items yet!</p>
+        
         {% endfor %}
     </div>
     <div>
@@ -82,7 +83,7 @@
                 {% empty %}
                 <!--If there are no members-->
                 <tr>
-                    <td colspan="4">No members yet!</td>
+                    <td colspan="4">No requests yet!</td>
                 </tr>
                 {% endfor %}
             </tbody>
