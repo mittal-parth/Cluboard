@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
-from base.models import Club
+from django.urls import reverse
+from base.models import Club, Request, Item
 from django.contrib.auth.models import User
+from django.contrib import messages
 
 from .forms import *
 
@@ -38,7 +40,7 @@ def item_add(request, pk):
         form = ItemForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('/')
+            return redirect(reverse('items_view', args = [pk]))
     context = {'club':club, 'form':form}
     return render(request, 'item_add.html', context)
 
@@ -66,3 +68,26 @@ def items_view(request, pk):
 
     context = {'club':club, 'all_items':all_items, 'reqs':reqs}
     return render(request, 'items_view.html', context)
+
+def request_approve(request, request_id):
+    #Approve the request if there is sufficient quantity available
+    req = Request.objects.get(id = request_id)
+    club_id = req.item.club.id 
+    if req.item.qty - req.qty >= 0:
+        req.item.qty -= req.qty
+        req.status = 'Approved'
+        req.item.save()
+        req.save()
+        messages.success(request, 'Request approved successfully!')
+        return redirect(reverse('items_view', args = [club_id]))
+    else:
+        messages.info(request, 'Request cannot be approved - Insufficient Quantity')
+        return redirect(reverse('items_view', args = [club_id]))
+
+def request_reject(request, request_id):
+    req = Request.objects.get(id = request_id)
+    club_id = req.item.club.id 
+    req.status = 'Rejected'
+    req.save()
+    messages.info(request, 'Request rejected successfully!')
+    return redirect(reverse('items_view', args = [club_id]))

@@ -2,91 +2,113 @@
 
 {% block title %}Items{% endblock title %}
 
-{% block body %}  
-    <div>
-        <h3 class="my-3 mx-4">Items <a id="add-link" href="{% url 'item_add' club.id %}"><i class="fa fa-plus-circle"></i></a></h3>
-    </div>
-    <div class="container my-5">
-        {% for items, range, nSlides in all_items %}
-        <div id="carouselControls{{forloop.counter}}" class="carousel slide my-3" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <!-- Slide of the carousel -->
-                <div class="carousel-item active">
-                    <div class="row">
-                        <!-- start a row of items-->
-                        {% for i in items|slice:"0:" %}
+{% block body %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show my-0" role="alert">
+    <strong>{{ message }}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+<div>
+    <h3 class="my-3 mx-4">Items <a id="add-link" href="{% url 'item_add' club.id %}"><i
+                class="fa fa-plus-circle"></i></a></h3>
+</div>
+<div class="container my-5">
+    {% for items, range, nSlides in all_items %}
+    <div id="carouselControls{{forloop.counter}}" class="carousel slide my-3" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- Slide of the carousel -->
+            <div class="carousel-item active">
+                <div class="row">
+                    <!-- start a row of items-->
+                    {% for i in items|slice:"0:" %}
 
-                        <div class="col-xs-3 col-sm-3 col-md-3">
-                            <!-- This is second coloumn of that row-->
-                            <div class="card" style="width: 220px;">
-                                <img src="/media/{{i.image}}" class="card-img-top" alt="..." height="220px"
-                                    width="220px">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{i.item_name}}</h5>
-                                    <p class="card-text">{{i.qty}}</p>
-                                </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3">
+                        <!-- This is second coloumn of that row-->
+                        <div class="card" style="width: 220px;">
+                            <img src="/media/{{i.image}}" class="card-img-top" alt="..." height="220px" width="220px">
+                            <div class="card-body">
+                                <h5 class="card-title">{{i.item_name}}</h5>
+                                <p class="card-text">{{i.qty}}</p>
                             </div>
                         </div>
-                        {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
                     </div>
-                </div>
-
-                <div class="carousel-item">
-                    <div class="row">
-                        {%endif%}
-                        {% empty %}
-                        <p>No items yet!</p>
-                        {%endfor%}
-                    </div>
+                    {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
                 </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls{{forloop.counter}}"
-                data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="false"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselControls{{forloop.counter}}"
-                data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="false"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+
+            <div class="carousel-item">
+                <div class="row">
+                    {%endif%}
+                    {% empty %}
+                    <p>No items yet!</p>
+                    {%endfor%}
+                </div>
+            </div>
         </div>
-        
-        {% endfor %}
-    </div>
-    <div>
-        <h3 class="my-3 mx-3">Requests</h3>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls{{forloop.counter}}"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="false"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselControls{{forloop.counter}}"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="false"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
 
-    <div class="card card-body mx-4">
-        <table class="table ">
-            <thead>
-                <tr>
-                    <th scope="col">Requested By</th>
-                    <th scope="col">Roll No</th>
-                    <th scope="col">Item</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Date Created</th>
-                    <th scope="col">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for req in reqs %}
-                <tr>
-                    <td>{{ req.requested_by.first_name }} {{ req.requested_by.last_name }}</td>
-                    <td>{{ req.requested_by.info.roll_no }}</td>
-                    <td>{{ req.item|truncatewords:1  }}</td>
-                    <td>{{ req.qty }}</td>
-                    <td>{{ req.date_created }}</td>
-                    <td>{{ req.status }}</td>
-                </tr>
-                {% empty %}
-                <!--If there are no members-->
-                <tr>
-                    <td colspan="4">No requests yet!</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    {% endfor %}
+</div>
+<div>
+    <h3 class="my-3 mx-3">Requests</h3>
+</div>
+
+<div class="card card-body mx-4">
+    <table class="table ">
+        <thead>
+            <tr>
+                <th scope="col">Requested By</th>
+                <th scope="col">Roll No</th>
+                <th scope="col">Item</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Date Created</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in reqs %}
+            <tr>
+                <td>{{ req.requested_by.first_name }} {{ req.requested_by.last_name }}</td>
+                <td>{{ req.requested_by.info.roll_no }}</td>
+                <td>{{ req.item|truncatewords:1 }}</td>
+                <td>{{ req.qty }}</td>
+                <td>{{ req.date_created }}</td>
+                <td>
+                    {% if request.user.info.designation == 'Admin' %}
+                    {{ req.status }}
+                    {% else %}
+                    {% if req.status == 'Approved' %}
+                    <button type="button" class="btn btn-success" disabled>Approved</button>
+                    {% elif req.status == 'Rejected' %}
+                    <button type="button" class="btn btn-danger" disabled>Rejected</button>
+                    {% else %}
+                    <a type="button" href="{% url 'request_approve' req.id %}" class="btn btn-success">Approve</a>
+                    <a type="button" href="{% url 'request_reject' req.id %}" class="btn btn-danger">Reject</a>
+                    {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <!--If there are no members-->
+            <tr>
+                <td colspan="4">No requests yet!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock body %}

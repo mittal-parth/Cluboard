@@ -8,4 +8,6 @@ urlpatterns = [
     path("item_add/<int:pk>", views.item_add, name="item_add"), 
     path("items_view/<int:pk>", views.items_view, name="items_view"), 
     path("club_view/<int:pk>", views.club_view, name="club_view"), 
+    path("request_approve/<int:request_id>", views.request_approve, name="request_approve"), 
+    path("request_reject/<int:request_id>", views.request_reject, name="request_reject"), 
 ]
