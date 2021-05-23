@@ -17,6 +17,7 @@ def index(request):
     return render(request, 'index.html', context)
 
 def index_member(request, pk):
+    #Display all items belonging to that club as a carousel of cards
     club = Club.objects.get(id=pk)
     items = club.item_set.all()
     all_items = []
@@ -24,7 +25,10 @@ def index_member(request, pk):
     nSlides = n//4 + ceil(n/4-n//4) #logic for displaying slides
     all_items.append([items, range(1, nSlides), nSlides])
 
-    context = {'club':club, 'all_items':all_items}
+    #Display all requests made by that user
+    reqs = request.user.request_set.all()
+
+    context = {'club':club, 'all_items':all_items, 'reqs':reqs}
     return render(request, 'index_member.html', context)
 
 def club_add(request):

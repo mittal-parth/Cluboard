@@ -13,7 +13,7 @@
 
     <title>Home | InvManage</title>
     <style>
-        
+
     </style>
 </head>
 
@@ -84,14 +84,58 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-        
+
         {% endfor %}
     </div>
-    
+
     <div>
         <h3 class="my-3 mx-3">Requests</h3>
     </div>
     <!--Show requests made only by that user (if any)-->
+    <div class="card card-body mx-4">
+        <table class="table ">
+            <thead>
+                <tr>
+                    <th scope="col">Requested By</th>
+                    <th scope="col">Roll No</th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Date Created</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in reqs %}
+                <tr>
+                    <td>{{ req.requested_by.first_name }} {{ req.requested_by.last_name }}</td>
+                    <td>{{ req.requested_by.info.roll_no }}</td>
+                    <td>{{ req.item|truncatewords:1 }}</td>
+                    <td>{{ req.qty }}</td>
+                    <td>{{ req.date_created }}</td>
+                    <td>
+                        {% if request.user.info.designation == 'Admin' %}
+                        {{ req.status }}
+                        {% else %}
+                        {% if req.status == 'Approved' %}
+                        <button type="button" class="btn btn-success" disabled>Approved</button>
+                        {% elif req.status == 'Rejected' %}
+                        <button type="button" class="btn btn-danger" disabled>Rejected</button>
+                        {% else %}
+                        <a type="button" href="{% url 'request_approve' req.id %}" class="btn btn-success">Approve</a>
+                        <a type="button" href="{% url 'request_reject' req.id %}" class="btn btn-danger">Reject</a>
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <!--If there are no members-->
+                <tr>
+                    <td colspan="4">No requests yet!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     {% if messages %}
     {% for message in messages %}
