@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from base.models import Club, Item
+from base.models import Club, Item, Request
 
 class ClubForm(forms.ModelForm):
     
@@ -13,4 +13,10 @@ class ItemForm(forms.ModelForm):
     
     class Meta:
         model = Item
+        fields = '__all__'
+
+class RequestForm(forms.ModelForm):
+    
+    class Meta:
+        model = Request
         fields = '__all__'

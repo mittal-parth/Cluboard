@@ -58,6 +58,26 @@ def item_add(request, pk):
     context = {'club':club, 'form':form}
     return render(request, 'item_add.html', context)
 
+def request_add(request, pk):
+    club = Club.objects.get(id = pk)
+
+    #Pre-filling a form with required values
+    initial = {'requested_by':request.user, 'club':club, 'status':'Pending'}
+    form = RequestForm(initial=initial)
+
+    #Restrict what a member can choose from
+    #Only see items pertaining to member's club
+    form.fields['item'].queryset = Item.objects.filter(club = pk)
+    form.fields['club'].queryset = Club.objects.filter(id = pk)
+    form.fields['requested_by'].queryset = User.objects.filter(username = request.user)
+
+    if request.method == 'POST':
+        form = RequestForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index_member', args = [pk]))
+    context = {'club':club, 'form':form}
+    return render(request, 'request_add.html', context)
 
 def club_view(request, pk):
     # Display all users belonging to that club

@@ -89,7 +89,8 @@
     </div>
 
     <div>
-        <h3 class="my-3 mx-3">Requests</h3>
+        <h3 class="my-3 mx-3">Requests <a id="add-link" href="{% url 'request_add' club.id %}"><i
+            class="fa fa-plus-circle"></i></a></h3>
     </div>
     <!--Show requests made only by that user (if any)-->
     <div class="card card-body mx-4">
@@ -113,7 +114,7 @@
                     <td>{{ req.qty }}</td>
                     <td>{{ req.date_created }}</td>
                     <td>
-                        {% if request.user.info.designation == 'Admin' %}
+                        {% if request.user.info.designation == 'Admin' or request.user.info.designation == 'Member' %}
                         {{ req.status }}
                         {% else %}
                         {% if req.status == 'Approved' %}
