@@ -16,6 +16,16 @@ def index(request):
     context = {'clubs': clubs}
     return render(request, 'index.html', context)
 
+def index_member(request, pk):
+    club = Club.objects.get(id=pk)
+    items = club.item_set.all()
+    all_items = []
+    n = len(items)
+    nSlides = n//4 + ceil(n/4-n//4) #logic for displaying slides
+    all_items.append([items, range(1, nSlides), nSlides])
+
+    context = {'club':club, 'all_items':all_items}
+    return render(request, 'index_member.html', context)
 
 def club_add(request):
 

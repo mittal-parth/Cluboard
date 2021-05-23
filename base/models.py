@@ -19,6 +19,7 @@ class Item(models.Model):
 
     def __str__(self):
         return self.item_name + ' ' + self.club.club_name
+        
 class Request(models.Model):
     STATUS = (('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected'))
     requested_by = models.ForeignKey(User, null=True, on_delete = models.SET_NULL)

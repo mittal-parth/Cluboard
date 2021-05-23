@@ -1,7 +1,10 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.urls import reverse
 
+from accounts.models import Info 
+from base.models import Club
 from .forms import CreateUserForm
 # Create your views here.
 def signupPage(request):
@@ -29,7 +32,12 @@ def loginPage(request):
         if user is not None:
             login(request, user)
             messages.success(request, 'You have been successfully logged in!')
-            return redirect('/')
+            if user.info.designation == 'Admin':
+                return redirect('/')
+            elif user.info.designation == 'Convenor':
+                return redirect(reverse('items_view', args = [user.club_set.first().id]))
+            else:
+                return redirect(reverse('index_member', args = [user.club_set.first().id]))
         else:
             messages.info(request, 'Invalid Credentials')
             return redirect('login')
