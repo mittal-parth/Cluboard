@@ -48,3 +48,17 @@ def items_view(request, pk):
     context = {'club':club, 'all_items':all_items, 'reqs':reqs}
     return render(request, 'items_view.html', context)
 
+def item_update(request, item_id):
+    #Update an existing item
+
+    item = Item.objects.get(id = item_id)
+    form = ItemForm(instance = item)
+    form.fields['club'].queryset = Club.objects.filter(id = item.club.id)
+    if request.method == 'POST':
+        form = ItemForm(request.POST, request.FILES, instance = item)
+        if form.is_valid():
+            item.save()
+            return redirect(reverse('items_view', args=[item.club.id])) 
+
+    context = {'form':form}
+    return render(request, 'item_update.html',context)

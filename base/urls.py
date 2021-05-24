@@ -7,6 +7,7 @@ urlpatterns = [
     path("index_member/<int:pk>", views_member.index_member, name="index_member"), 
     path("club_add/", views_admin.club_add, name="club_add"), 
     path("item_add/<int:pk>", views.item_add, name="item_add"), 
+    path("item_update/<int:item_id>", views.item_update, name="item_update"), 
     path("request_add/<int:pk>", views_member.request_add, name="request_add"), 
     path("items_view/<int:pk>", views.items_view, name="items_view"), 
     path("club_view/<int:pk>", views.club_view, name="club_view"), 
