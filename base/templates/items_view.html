@@ -1,5 +1,4 @@
 {% extends 'main.html' %}
-
 {% block title %}Items{% endblock title %}
 
 {% block body %}
@@ -28,7 +27,8 @@
                     <div class="col-xs-3 col-sm-3 col-md-3">
                         <!-- This is second coloumn of that row-->
                         <div class="card" style="width: 220px;">
-                            <img src="/media/{{i.image}}" class="card-img-top" alt="..." height="220px" width="220px">
+                            <img src="/media/{{i.image}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px">
+                            {% comment %} <img src="{{i.image.url}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px"> {% endcomment %}
                             <div class="card-body">
                                 <h5 class="card-title">{{i.item_name}}</h5>
                                 <p class="card-text">{{i.qty}}</p>

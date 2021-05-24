@@ -18,6 +18,8 @@ class MiddleWare(MiddlewareMixin):
                     pass
                 elif modulename == 'accounts.views':
                     pass
+                elif modulename == 'media':
+                    pass
                 else:
                     return redirect('/')
             elif user.info.designation == 'Convenor':

@@ -47,3 +47,6 @@ def loginPage(request):
 def logoutPage(request):
     logout(request)
     return redirect('login')
+
+def profile(request):
+    return render(request, 'profile.html')
