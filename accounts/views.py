@@ -35,7 +35,7 @@ def loginPage(request):
             if user.info.designation == 'Admin':
                 return redirect('/')
             elif user.info.designation == 'Convenor':
-                return redirect(reverse('items_view', args = [user.club_set.first().id]))
+                return redirect(reverse('club_view', args = [user.club_set.first().id]))
             else:
                 return redirect(reverse('index_member', args = [user.club_set.first().id]))
         else:

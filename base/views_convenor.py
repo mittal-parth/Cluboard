@@ -8,6 +8,7 @@ from .forms import *
 
 from math import ceil
 
+#Views that are exclusively for a Convenor are implemented here 
 def request_approve(request, request_id):
     #Approve the request if there is sufficient quantity available
     req = Request.objects.get(id = request_id)

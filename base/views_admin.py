@@ -8,6 +8,7 @@ from .forms import *
 
 from math import ceil
 
+#Views that are exclusively for the admin are implemented here 
 def index(request):
     
     clubs = Club.objects.all()

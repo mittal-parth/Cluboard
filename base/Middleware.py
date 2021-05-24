@@ -28,7 +28,7 @@ class MiddleWare(MiddlewareMixin):
                 elif modulename == 'accounts.views':
                     pass
                 else:
-                    return redirect(reverse('items_view', args = [user.club_set.first().id]))
+                    return redirect(reverse('club_view', args = [user.club_set.first().id]))
             elif user.info.designation == 'Member':
                 if modulename == 'base.views_member':
                     pass

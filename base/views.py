@@ -7,7 +7,8 @@ from django.contrib import messages
 from .forms import *
 
 from math import ceil
-# Create your views here.
+
+# Views that are common to a Convenor and Admin are implemented here
 
 def item_add(request, pk):
 

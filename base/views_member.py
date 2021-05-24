@@ -8,6 +8,7 @@ from .forms import *
 
 from math import ceil
 
+#Views that are exclusively for a Member are implemented here 
 def index_member(request, pk):
     #Display all items belonging to that club as a carousel of cards
     club = Club.objects.get(id=pk)
