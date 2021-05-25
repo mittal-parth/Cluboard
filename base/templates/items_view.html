@@ -29,7 +29,7 @@
                         <div class="card" style="width: 220px;">
                             <img src="/media/{{i.image}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px">
                             {% comment %} <img src="{{i.image.url}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px"> {% endcomment %}
-                            <a href="{% url 'item_update' i.id %}"><div class="card-body">
+                            <a href="{% url 'item_update' i.id club.id %}"><div class="card-body">
                                 <h5 class="card-title">{{i.item_name}}</h5>
                                 <p class="card-text">{{i.qty}}</p>
                             </div></a>
