@@ -18,7 +18,9 @@ class MiddleWare(MiddlewareMixin):
                     pass
                 elif modulename == 'accounts.views':
                     pass
-                elif modulename == 'media':
+                elif request.path.startswith(reverse('admin:index')):
+                    pass
+                elif request.path.startswith(reverse('static:index')):
                     pass
                 else:
                     return redirect('/')
