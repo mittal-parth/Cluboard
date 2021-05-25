@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from accounts.models import Info 
 from base.models import Club
@@ -22,7 +23,6 @@ def signupPage(request):
     return render(request, 'signup.html', context)
 
 
-    return render(request, 'signup.html')
 def loginPage(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -44,9 +44,11 @@ def loginPage(request):
  
     return render(request, 'login.html')
 
+@login_required(login_url='login')
 def logoutPage(request):
     logout(request)
     return redirect('login')
 
+@login_required(login_url='login')
 def profile(request):
     return render(request, 'profile.html')
