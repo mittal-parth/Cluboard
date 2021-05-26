@@ -2,14 +2,7 @@
 {% block title %}Items{% endblock title %}
 
 {% block body %}
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-{{ message.tags }} alert-dismissible fade show my-0" role="alert">
-    <strong>{{ message }}</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
+
 <div>
     <h3 class="my-3 mx-4">Items <a id="add-link" href="{% url 'item_add' club.id %}"><i
                 class="fa fa-plus-circle"></i></a></h3>
@@ -29,7 +22,7 @@
                         <div class="card" style="width: 220px;">
                             <img src="/media/{{i.image}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px">
                             {% comment %} <img src="{{i.image.url}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px"> {% endcomment %}
-                            <a href="{% url 'item_update' i.id club.id %}"><div class="card-body">
+                            <a href="{% url 'item_update' club.id i.id %}"><div class="card-body">
                                 <h5 class="card-title">{{i.item_name}}</h5>
                                 <p class="card-text">{{i.qty}}</p>
                             </div></a>

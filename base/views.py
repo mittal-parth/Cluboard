@@ -120,10 +120,11 @@ def items_view(request, pk):
 
 @login_required(login_url='login')
 @user_passes_test(admin_or_convenor_check, login_url='error_page')
-def item_update(request, item_id, pk):
+def item_update(request, pk, item_id):
     #Update an existing item
     if admin_check(request.user) or request.user.club_set.first().id == pk:
         item = Item.objects.get(id = item_id)
+        club = Club.objects.get(id=pk)
         form = ItemForm(instance = item)
         form.fields['club'].queryset = Club.objects.filter(id = item.club.id)
         if request.method == 'POST':
@@ -132,7 +133,7 @@ def item_update(request, item_id, pk):
                 item.save()
                 return redirect(reverse('items_view', args=[item.club.id])) 
 
-        context = {'form':form}
+        context = {'club':club, 'form':form}
         return render(request, 'item_update.html',context)
     else:
         return redirect('error_page')
