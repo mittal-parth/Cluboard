@@ -45,7 +45,7 @@ def index_member(request, pk):
         all_items.append([items, range(1, nSlides), nSlides])
 
         #Display all requests made by that user
-        reqs = request.user.request_set.all()
+        reqs = request.user.request_set.all().order_by('-date_created')
 
         context = {'club':club, 'all_items':all_items, 'reqs':reqs}
         return render(request, 'index_member.html', context)
@@ -72,7 +72,7 @@ def club_view(request, pk):
     if admin_check(request.user) or request.user.club_set.first().id == pk: 
     # Display all users belonging to that club
         club = Club.objects.get(id=pk)
-        members = club.users.all()
+        members = club.users.all().order_by('info__designation')
         context = {'club': club, 'members': members}
 
         return render(request, 'club_view.html', context)
@@ -86,7 +86,7 @@ def item_add(request, pk):
     if admin_check(request.user) or request.user.club_set.first().id == pk:
         club = Club.objects.get(id=pk)
         initial = {'club':club}
-        
+
         #Adding a new item
         form = ItemForm(initial=initial)
         form.fields['club'].queryset = Club.objects.filter(id = pk)
@@ -113,7 +113,7 @@ def items_view(request, pk):
         all_items.append([items, range(1, nSlides), nSlides])
 
         #Display all requests pertaining to that club
-        reqs = club.request_set.all()
+        reqs = club.request_set.all().order_by('-date_created')
 
         context = {'club':club, 'all_items':all_items, 'reqs':reqs}
         return render(request, 'items_view.html', context)
