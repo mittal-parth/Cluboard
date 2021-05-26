@@ -37,7 +37,7 @@ _After ensuring that we are in a virtual environment (If not, use `workon test`)
 `python manage.py makemigrations` <br>
 `python manage.py migrate` <br>
 `python manage.py runserver`<br>
-
+<p>Visit development server http://127.0.0.1:8000 </p>
 <h3>Create Super user:</h3>
 
 `python manage.py createsuperuser`
