@@ -3,11 +3,17 @@ College Clubs have resources that can be borrowed by any of its members upon req
 approved by the convener of the club.
 Three roles exist namely, Admin, Convenor and Member. Different users have access to only specific functions.
 <h3>Admin Demo</h3>
+
 ![Admin Demo](Admin_Demo.gif)
+
 <h3>Convenor Demo</h3>
+
 ![Convenor Demo](Convenor_Demo.gif)
+
 <h3>Member Demo</h3>
+
 ![Member Demo](Member_Demo.gif)
+
 <h3>To add new user to club</h3>
 ![UserAdd Demo](add_user_to_club.gif)
 
