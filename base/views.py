@@ -3,6 +3,7 @@ from django.urls import reverse
 from base.models import Club, Request, Item
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .forms import *
@@ -32,7 +33,7 @@ def index(request):
 @login_required(login_url='login')
 @user_passes_test(member_check, login_url='error_page')
 def index_member(request, pk):
-    
+
     #Member should be able to view only their own club's items
     if request.user.club_set.first().id == pk: 
         #Display all items belonging to that club as a carousel of cards
@@ -183,8 +184,24 @@ def request_add(request, pk):
 
         if request.method == 'POST':
             form = RequestForm(request.POST)
+
+            #Data required to send mail
+            requested_by = request.user.first_name + request.user.last_name
+            item = request.POST['item']
+            qty = request.POST['qty']
+
+            #List of all convenors of that club and their emails
+            convenors = User.objects.filter(info__designation = 'Convenor').filter(club__id = pk) 
+            emails_convenors = convenors.values_list('email')
+            
             if form.is_valid():
+                #Send emails to all convenors about a new request
+                email = EmailMessage(subject='New Item Request at InvManage',
+                body = f'There is a new request for {qty} {item} by {requested_by}',
+                # from_email='mittalparth22@gmail.com',
+                bcc = emails_convenors)
                 form.save()
+                email.send()
                 return redirect(reverse('index_member', args = [pk]))
         context = {'club':club, 'form':form}
         return render(request, 'request_add.html', context)
