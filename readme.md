@@ -26,6 +26,7 @@ _After ensuring that we are in a virtual environment (If not, use `workon test`)
 <h3>Create Super user:</h3>
 
 `python manage.py createsuperuser`
+<p>Enter desired credentials</p>
 
 <h3>Admin Site:</h3>
 
@@ -61,6 +62,7 @@ http://127.0.0.1:8000/admin
 </ul>
 <h3>Planned Features</h3>
 <ul>
+    <li>Email respective users about requests</li>
     <li>Add,remove user(s) directly without using the Django admin panel</li>
 </ul>
 <h3>Known Bugs</h3>

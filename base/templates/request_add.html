@@ -6,10 +6,10 @@
 <div class="mx-4 my-4">
     <form action="" method="POST" >
         {% csrf_token %}
-        <p>Requested By: {{form.requested_by}}</p>
-        <p>Club: {{form.club}}</p>
-        <p>Item: {{form.item}}</p>
-        <p>Qty: {{form.qty}}</p>
+        <p > <label class ="form_label">Requested By: </label>{{form.requested_by}}</p>
+        <p ><label class ="form_label">Club: </label> {{form.club}}</p>
+        <p ><label class ="form_label">Item: </label> {{form.item}}</p>
+        <p><label class ="form_label">Qty: </label> {{form.qty}}</p>
         <!-- {{form.as_p}} -->
         <button type="submit">Add Request</button>
     </form>

@@ -199,12 +199,12 @@ def request_add(request, pk):
             
             if form.is_valid():
                 #Send emails to all convenors about a new request
-                email = EmailMessage(subject='New Item Request at InvManage',
-                body = f'There is a new request for {qty} {item} by {requested_by}',
-                # from_email='mittalparth22@gmail.com',
-                bcc = emails_convenors)
+                # email = EmailMessage(subject='New Item Request at InvManage',
+                # body = f'There is a new request for {qty} {item} by {requested_by}',
+                # # from_email='mittalparth22@gmail.com',
+                # bcc = emails_convenors)
                 form.save()
-                email.send()
+                # email.send()
                 return redirect(reverse('index_member', args = [pk]))
         context = {'club':club, 'form':form}
         return render(request, 'request_add.html', context)
