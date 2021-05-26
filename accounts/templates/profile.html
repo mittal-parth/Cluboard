@@ -1,24 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'main_admin.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | InvManage </title>
-</head>
+{% block title %}Update Item{% endblock title %}
 
-<body>
+{% block body %} 
     <div class="mx-3 my-3">
         <br>
         <h3>Hello, {{request.user.first_name}} {{request.user.last_name}}</h3><br>
-        <p><b>Email:</b>{{request.user.email}}</p>
-        <p><b>Roll No:</b>{{request.user.info.roll_no}}</p>
-        <p><b>Club:</b>{{request.user.club_set.first.club_name}}</p>
-        <p><b>Designation:</b>{{request.user.info.designation}}</p>
+        <p><b>Email: </b>{{request.user.email}}</p>
+        <p><b>Roll No: </b>{{request.user.info.roll_no}}</p>
+        <p><b>Club: </b>{{request.user.club_set.first.club_name}}</p>
+        <p><b>Designation: </b>{{request.user.info.designation}}</p>
         <br>
         <br>
     </div>
-</body>
-
-</html>
+{% endblock body %}

@@ -86,8 +86,10 @@ def item_add(request, pk):
     if admin_check(request.user) or request.user.club_set.first().id == pk:
         club = Club.objects.get(id=pk)
         initial = {'club':club}
+        
         #Adding a new item
         form = ItemForm(initial=initial)
+        form.fields['club'].queryset = Club.objects.filter(id = pk)
         if request.method == 'POST':
             form = ItemForm(request.POST, request.FILES)
             if form.is_valid():

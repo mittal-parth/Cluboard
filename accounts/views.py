@@ -51,4 +51,6 @@ def logoutPage(request):
 
 @login_required(login_url='login')
 def profile(request):
-    return render(request, 'profile.html')
+    club = request.user.club_set.first()
+    context = {'club':club}
+    return render(request, 'profile.html', context)

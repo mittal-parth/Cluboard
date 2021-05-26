@@ -1,3 +1,4 @@
+<!-- This template acts as a base for index.html and club_add.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,11 +27,17 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
+            {% if request.user.info.designation == 'Admin' %}
             <a class="navbar-brand" href="/">InvManage</a>
+            {% elif request.user.info.designation == 'Convenor' %}
+            <a class="navbar-brand" href="{% url 'club_view' club.id %}">InvManage</a>
+            {% else %}
+            <a class="navbar-brand" href="{% url 'index_member' request.user.club_set.first.id %}">InvManage</a>
+            {% endif %}
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Hi, {{user.first_name}}</a>
+                        <a class="nav-link active" href="{% url 'profile' %}">Hi, {{user.first_name}}</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
