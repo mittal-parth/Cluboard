@@ -79,6 +79,7 @@ http://127.0.0.1:8000/admin
 <ul>
     <li>Email respective users about requests</li>
     <li>Add,remove user(s) directly without using the Django admin panel</li>
+    <li>Reset, Change Password</li>
 </ul>
 <h3>Known Bugs</h3>
 <ul>
