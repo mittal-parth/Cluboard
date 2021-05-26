@@ -1,5 +1,6 @@
 # Django Inventory Management System
-College Clubs have resources that can be borrowed by any of its members upon request. Members can borrow resources when approved by the convener of the club. 
+College Clubs have resources that can be borrowed by any of its members upon request. Members can borrow resources when
+approved by the convener of the club.
 Three roles exist namely, Admin, Convenor and Member. Different users have access to only specific functions.
 
 <h3>Installing and using a Virtual Environment</h3>
@@ -32,16 +33,35 @@ http://127.0.0.1:8000/admin
 
 <h3>Implemented Features</h3>
 <ul>
+    <li>Member
+        <ul>
+            <li>View club items</li>
+            <li>Request for items</li>
+            <li>View request status</li>
+        </ul>
+    </li>
+    <li>Convenor
+        <ul>
+            <li>View all members of club</li>
+            <li>View club items</li>
+            <li>Add, Update items</li>
+            <li>View member requests</li>
+            <li>Approve/Reject requests</li>
+            <li>Validation of quantity of requested item</li>
+        </ul>
+    </li>
+    <li>Admin
+        <ul>
+            <li>View all clubs, users, items and requests</li>
+            <li>Add new club</li>
+            <li>Add, Update items</li>
+        </ul>
+    </li>
     <li>Authentication and page restrictions</li>
-    <li></li>
-    <li>Cart functionality</li>
-    <li>Viewing each product</li>
-    <li>Searching Products</li>
-    <li>Placing order</li>    
 </ul>
 <h3>Planned Features</h3>
 <ul>
-    <li>Statistics on user dashboard</li>
+    <li>Add,remove user(s) directly without using the Django admin panel</li>
 </ul>
 <h3>Known Bugs</h3>
 <ul>
@@ -50,6 +70,7 @@ http://127.0.0.1:8000/admin
 
 <h3>References:</h3>
 <a href="https://docs.djangoproject.com/en/3.2/">Django's Official Documentation</a><br>
-<a href="https://www.youtube.com/watch?v=tUqUdu0Sjyc&list=PL-51WBLyFTg2vW-_6XBoUpE7vpmoR3ztO&index=15">Dennis Ivy Youtube</a><br>
+<a href="https://www.youtube.com/watch?v=tUqUdu0Sjyc&list=PL-51WBLyFTg2vW-_6XBoUpE7vpmoR3ztO&index=15">Dennis Ivy
+    Youtube</a><br>
 <a href="https://www.youtube.com/watch?v=yyBF-2SXXOc&t=690s">Super Coders Youtube</a><br>
 <a href="https://stackoverflow.com/">Stack Overflow</a><br>

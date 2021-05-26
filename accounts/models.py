@@ -7,4 +7,4 @@ class Info(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     designation = models.CharField(max_length=100, default="Member", choices=CHOICES)
     roll_no = models.CharField(max_length=100)
-
+    
