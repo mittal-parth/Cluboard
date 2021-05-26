@@ -11,13 +11,86 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
 
     <title>{% block title %}{% endblock title %} | InvManage</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: 'Nunito', sans-serif;
+            color: white;
+        }
 
+        .card_item {
+            background-color: #25274D;
+            color: white;
+        }
+
+        .card {
+            background-color: black;
+        }
+
+        a,
+        p {
+            color: white;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: rgb(180, 175, 175);
+        }
+
+        th,
+        td {
+            color: white;
+        }
+
+        .table_head {
+            background-color: #25274D !important;
+        }
+
+        .table-striped>tbody>tr:nth-child(odd)>td,
+        .table-striped>tbody>tr:nth-child(odd)>th {
+            background-color: rgb(37, 36, 36);
+        }
+
+        input[type=text],
+        input[type=number],
+        #id_club,
+        textarea {
+            margin-right: 3px;
+            border: 1px solid rgb(51, 47, 47);
+            border-radius: 5px;
+            padding: 8px;
+            background-color: rgb(29, 27, 27);
+            color: white;
+
+        }
+
+        button {
+            border: 1px solid rgb(51, 47, 47);
+            background-color: #25274D;
+            color: white;
+            padding: 10px;
+            font-size: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        label{
+            width: 10%;
+        }
+        input[type=file]{
+            display: none;
+        }
+
+       
+    </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
         <div class="container-fluid">
             {% if request.user.info.designation == 'Admin' %}
             <a class="navbar-brand" href="/">InvManage</a>
@@ -32,19 +105,19 @@
                         <a class="nav-link active" href="{% url 'profile' %}">Hi, {{request.user.first_name}}</a>
                     </li>
                     {% if request.user.info.designation == 'Convenor' or request.user.info.designation == 'Admin' %}
-                    
+
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'club_view' club.id %}">Users</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'items_view' club.id %}">Items</a>
                     </li>
-        
+
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        <a class="nav-link" style="color: rgb(180, 175, 175)" href="{% url 'logout' %}">Logout</a>
                     </li>
                 </ul>
             </div>

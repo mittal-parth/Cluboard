@@ -1,6 +1,7 @@
 <!-- This template acts as a base for index.html and club_add.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,6 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
 
     <title>{% block title %}{% endblock title %} | InvManage</title>
     <style>
@@ -22,8 +24,63 @@
             /* justify-content: center; */
             /* max-width: 100%; */
         }
+
+        .card {
+            background-color: #25274D;
+            color: white;
+        }
+
+        body {
+            background-color: black;
+            font-family: 'Nunito', sans-serif;
+            color: white;
+        }
+
+        h3,
+        h4,
+        a,
+        p {
+            color: white;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: rgb(180, 175, 175);
+        }
+
+        #id_users {
+            background-color: rgb(29, 27, 27);
+            color: white;
+        }
+
+        input[type=text],
+        input[type=number],
+        textarea {
+            margin-right: 3px;
+            border: 1px solid rgb(51, 47, 47);
+            border-radius: 5px;
+            padding: 8px;
+            background-color: rgb(29, 27, 27);
+            color: white;
+        }
+
+        button {
+            border: 1px solid rgb(51, 47, 47);
+            background-color: #25274D;
+            color: white;
+            padding: 10px;
+            font-size: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        label{
+            width: 10%;
+        }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -56,7 +113,7 @@
     </div>
     {% endfor %}
     {% endif %}
-    
+
     {% block body %}{% endblock body %}
 
     <!-- Optional JavaScript -->
@@ -65,4 +122,5 @@
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
         crossorigin="anonymous"></script>
 </body>
+
 </html>

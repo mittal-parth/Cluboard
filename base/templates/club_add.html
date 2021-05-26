@@ -3,11 +3,16 @@
 {% block title %}Add Club{% endblock title %}
 
 {% block body %}
-<div class="my-3 mx-3">
+<div class="mx-4 my-2">
+    <h3>Add Club</h3>
+</div>
+
+<div class="my-4 mx-4">
+
     <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{form.as_p}}
-        <button type="submit">Add Club</button>
+        <button type="submit" >Add Club</button>
     </form>
 </div>
 {% endblock body %}
