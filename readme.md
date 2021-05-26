@@ -15,6 +15,7 @@ Three roles exist namely, Admin, Convenor and Member. Different users have acces
 ![Member Demo](Member_Demo.gif)
 
 <h3>To add new user to club</h3>
+
 ![UserAdd Demo](add_user_to_club.gif)
 
 <h3>Installing and using a Virtual Environment</h3>
