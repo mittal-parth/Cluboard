@@ -105,6 +105,15 @@ def user_add(request, pk):
 
 @login_required(login_url='login')
 @user_passes_test(admin_check, login_url='error_page')
+def user_delete(request, user_id):
+    user = User.objects.get(id = user_id)
+    club = user.club_set.first()
+    user.delete()
+    messages.info(request, 'User deleted successfully!')
+    return redirect(reverse('club_view', args=[club.id]))
+
+@login_required(login_url='login')
+@user_passes_test(admin_check, login_url='error_page')
 def club_add(request):
 
     # Adding a new club

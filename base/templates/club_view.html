@@ -22,7 +22,7 @@
             <tbody>
                 {% for member in members %}
                 <tr>
-                    <td>{{member.first_name}} {{member.last_name}}</td>
+                    <td> <a href="{% url 'profile' club.id member.id %}">{{member.first_name}} {{member.last_name}}</a></td>
                     <td>{{member.info.designation}}</td>
                     <td>{{member.info.roll_no}}</td>
 

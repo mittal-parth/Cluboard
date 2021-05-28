@@ -114,7 +114,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'profile' %}">Hi, {{request.user.first_name}}</a>
+                        <a class="nav-link active" href="{% url 'profile' club.id request.user.id %}">Hi, {{request.user.first_name}}</a>
                     </li>
                     {% if request.user.info.designation == 'Convenor' or request.user.info.designation == 'Admin' %}
 

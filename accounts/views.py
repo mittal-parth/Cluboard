@@ -3,11 +3,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 from accounts.models import Info 
 from base.models import Club
 from .forms import CreateUserForm
 # Create your views here.
+
+
 def signupPage(request):
     form = CreateUserForm()
 
@@ -50,7 +53,20 @@ def logoutPage(request):
     return redirect('login')
 
 @login_required(login_url='login')
-def profile(request):
-    club = request.user.club_set.first()
-    context = {'club':club}
+def profile(request, pk, user_id):
+    user = User.objects.get(id = user_id)
+    club = Club.objects.get(id = pk)
+    context = {'club':club, 'user':user}
+    if request.user.info.designation == 'Member':
+        if request.user.id == user_id:
+            return render(request, 'profile.html', context)
+        else:
+            return redirect('error_page')
+    elif request.user.info.designation == 'Convenor':
+        if request.user.club_set.first().id == club.id:
+            return render(request, 'profile.html', context)
+        else:
+            return redirect('error_page')
     return render(request, 'profile.html', context)
+
+

@@ -80,6 +80,7 @@ http://127.0.0.1:8000/admin
             <li>Add new club</li>
             <li>Add, Update items</li>
             <li>Add new user</li>
+            <li>Delete user</li>
         </ul>
     </li>
     <li>Authentication and page restrictions</li>

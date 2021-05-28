@@ -1,16 +1,19 @@
 {% extends 'main_admin.html' %}
 
-{% block title %}Update Item{% endblock title %}
+{% block title %}Profile{% endblock title %}
 
 {% block body %} 
     <div class="mx-3 my-3">
         <br>
-        <h3>Hello, {{request.user.first_name}} {{request.user.last_name}}</h3><br>
-        <p><b>Email: </b>{{request.user.email}}</p>
-        <p><b>Roll No: </b>{{request.user.info.roll_no}}</p>
-        <p><b>Club: </b>{{request.user.club_set.first.club_name}}</p>
-        <p><b>Designation: </b>{{request.user.info.designation}}</p>
+        <h3><b>Name:</b> {{user.first_name}} {{user.last_name}}</h3><br>
+        <p><b>Email: </b>{{user.email}}</p>
+        <p><b>Roll No: </b>{{user.info.roll_no}}</p>
+        <p><b>Club: </b>{{user.club_set.first.club_name}}</p>
+        <p><b>Designation: </b>{{user.info.designation}}</p>
         <br>
         <br>
+        {% if request.user.info.designation == 'Admin' %}
+        <a href="{% url 'user_delete' user.id %}" class="button" >Delete</a>
+        {% endif %}
     </div>
 {% endblock body %}
