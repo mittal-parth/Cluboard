@@ -7,7 +7,8 @@ from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 
-from .forms import *
+from base.forms import *
+from accounts.forms import *
 
 from math import ceil
 
@@ -63,6 +64,44 @@ def index_member(request, pk):
     else:
         return redirect('error_page')
 
+@login_required(login_url='login')
+@user_passes_test(admin_check, login_url='error_page')
+def user_add(request, pk):
+    club = Club.objects.get(id = pk)
+    user_form = CreateUserForm()
+    info_form = InfoForm()
+    context = {'user_form':user_form, 'info_form':info_form, 'club':club}
+
+    if request.method == 'POST':
+        user_form = CreateUserForm(request.POST)
+        info_form = InfoForm(request.POST)
+
+        if user_form.is_valid():
+            user_form.save()
+            
+            #Getting required data to display message 
+            first_name = user_form.cleaned_data.get('first_name')
+            last_name = user_form.cleaned_data.get('last_name')
+            username = user_form.cleaned_data.get('username')
+            
+            #Getting required data from info_form
+            roll_no = request.POST['roll_no']
+            designation = request.POST['designation']
+            user = User.objects.get(username = username)
+
+            #Creating an Info object linked to this user
+            user_info = Info(user = user, roll_no=roll_no, designation=designation)
+            user_info.save()
+
+            #Adding user to club
+            club.users.add(user)
+            
+            messages.success(request, f'Account was successfully created for {first_name} {last_name} and added to {club.club_name}!')
+            return redirect(reverse('club_view', args=[pk]))
+        else:
+            messages.info(request, 'Error creating user')
+
+    return render(request, 'user_add.html', context)
 
 @login_required(login_url='login')
 @user_passes_test(admin_check, login_url='error_page')

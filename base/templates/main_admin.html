@@ -55,6 +55,8 @@
 
         input[type=text],
         input[type=number],
+        input[type=email],
+        input[type=password],
         textarea {
             margin-right: 3px;
             border: 1px solid rgb(51, 47, 47);
@@ -78,6 +80,10 @@
         label{
             width: 10%;
         }
+        .password_wrapper, .helptext{
+            color:rgb(240, 155, 155);
+            font-size: 80%;
+        }
     </style>
 </head>
 
@@ -99,7 +105,7 @@
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="accounts/logout">Logout</a>
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                     </li>
                 </ul>
             </div>

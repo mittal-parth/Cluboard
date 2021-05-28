@@ -20,3 +20,5 @@ class RequestForm(forms.ModelForm):
     class Meta:
         model = Request
         fields = ['requested_by', 'club', 'item', 'qty']
+        
+

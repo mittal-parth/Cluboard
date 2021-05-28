@@ -1,0 +1,56 @@
+{% extends 'main.html' %}
+
+{% block title %}Add User{% endblock title%}
+
+{% block body%}
+
+<div class="mx-4 my-2">
+    <h3>Add User</h3>
+</div>
+
+<div class="my-4 mx-4">
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{user_form.as_p}}
+        <p > <label class ="form_label">Roll No:</label> {{info_form.roll_no}}</p>
+        <p> <label class ="form_label">Designation:</label> {{info_form.designation}}</p>
+        <button type="submit">Add User</button>
+    </form>
+    <!-- <form action="" method="POST">
+        {% csrf_token %}
+        <p><label for="id_first_name">First name:</label> <input type="text" name="first_name" maxlength="150"
+                id="id_first_name"></p>
+        <p><label for="id_last_name">Last name:</label> <input type="text" name="last_name" maxlength="150"
+                id="id_last_name"></p>
+        <p><label for="id_username">Username:</label> <input type="text" name="username" maxlength="150" autofocus=""
+                required="" id="id_username"> <span class="helptext">Required. 150 characters or fewer. Letters, digits
+                and @/./+/-/_ only.</span></p>
+        <p><label for="id_email">Email address:</label> <input type="email" name="email" maxlength="254" id="id_email">
+        </p>
+        <p><label for="id_password1">Password:</label> <input type="password" name="password1"
+                autocomplete="new-password" required="" id="id_password1"> <span class="helptext"></span></p>
+        <ul class="password_wrapper">
+            <li>Your password can’t be too similar to your other personal information.</li>
+            <li>Your password must contain at least 8 characters.</li>
+            <li>Your password can’t be a commonly used password.</li>
+            <li>Your password can’t be entirely numeric.</li>
+        </ul>
+        <p></p>
+        <p><label for="id_password2">Password confirmation:</label> <input type="password" name="password2"
+                autocomplete="new-password" required="" id="id_password2"> <span class="helptext">Enter the same
+                password as before, for verification.</span></p>
+        <p><label for="id_roll_no">Roll no:</label> <input type="text" name="roll_no" maxlength="100" required=""
+                id="id_roll_no"></p>
+        <p><label for="id_designation">Designation:</label> <select name="designation" id="id_designation">
+                <option value="Member" selected="">Member</option>
+
+                <option value="Convenor">Convenor</option>
+
+                <option value="Admin">Admin</option>
+
+            </select></p>
+        <button type="submit">Add User</button>
+    </form> -->
+</div>
+{% endblock body%}

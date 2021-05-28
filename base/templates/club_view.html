@@ -4,7 +4,12 @@
 
 {% block body %}
 
-    <h3 class="mx-4 my-1">Users</h3>
+    <h3 class="mx-4 my-1">Users 
+    {% if request.user.info.designation == 'Admin' %}
+    <a id="add-link" href="{% url 'user_add' club.id %}"><i
+                class="fa fa-plus-circle"></i></a>
+    {% endif %}
+    </h3>
     <div class="card card-body mx-3">
         <table class="table table-striped">
             <thead class="table_head">
