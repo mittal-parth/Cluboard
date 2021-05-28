@@ -16,10 +16,6 @@ Three roles exist namely, Admin, Convenor and Member. Different users have acces
 
 ![Member Demo](Member_Demo.gif)
 
-<h3>To add new user to club</h3>
-
-![UserAdd Demo](add_user_to_club.gif)
-
 <br>
 <h3>Installing and using a Virtual Environment</h3>
 
@@ -83,6 +79,7 @@ http://127.0.0.1:8000/admin
             <li>View all clubs, users, items and requests</li>
             <li>Add new club</li>
             <li>Add, Update items</li>
+            <li>Add new user</li>
         </ul>
     </li>
     <li>Authentication and page restrictions</li>
@@ -91,7 +88,6 @@ http://127.0.0.1:8000/admin
 <br>
 <h3>Planned Features</h3>
 <ul>
-    <li>Add,remove user(s) directly without using the Django admin panel</li>
     <li>Reset, Change Password</li>
 </ul>
 <br>

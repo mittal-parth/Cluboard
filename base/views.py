@@ -193,10 +193,19 @@ def item_update(request, pk, item_id):
                 messages.success(request, 'Item updated successfully!')
                 return redirect(reverse('items_view', args=[item.club.id]))
 
-        context = {'club': club, 'form': form}
+        context = {'club': club, 'form': form, 'item':item}
         return render(request, 'item_update.html', context)
     else:
         return redirect('error_page')
+
+@login_required(login_url='login')
+@user_passes_test(admin_or_convenor_check, login_url='error_page')
+def item_delete(request, item_id):
+    item = Item.objects.get(id = item_id)
+    club_id = item.club.id
+    item.delete()
+    messages.info(request, 'Item deleted successfully!')
+    return redirect(reverse('items_view', args=[club_id]))
 
 
 @login_required(login_url='login')
