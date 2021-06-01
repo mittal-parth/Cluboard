@@ -84,12 +84,8 @@ http://127.0.0.1:8000/admin
         </ul>
     </li>
     <li>Authentication and page restrictions</li>
-    <li>Email respective users about request flow</li>
-</ul>
-<br>
-<h3>Planned Features</h3>
-<ul>
     <li>Reset, Change Password</li>
+    <li>Email respective users about request flow</li>
 </ul>
 <br>
 <h3>Known Bugs</h3>

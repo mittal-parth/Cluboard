@@ -15,5 +15,10 @@
         {% if request.user.info.designation == 'Admin' %}
         <a href="{% url 'user_delete' user.id %}" class="button" >Delete</a>
         {% endif %}
+        {% if request.user.info.designation != 'Admin' %}
+        <a href="{% url 'password_change' %}" >Change Password</a>
+        {% endif %}
+
+
     </div>
 {% endblock body %}
