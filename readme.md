@@ -1,4 +1,4 @@
-# Django Inventory Management System
+# College Inventory Management System
 College Clubs have resources that can be borrowed by any of its members upon request. Members can borrow resources when
 approved by the convener of the club.
 Three roles exist namely, Admin, Convenor and Member. Different users have access to only specific functions.
