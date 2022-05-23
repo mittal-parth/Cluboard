@@ -35,12 +35,7 @@ def loginPage(request):
         if user is not None:
             login(request, user)
             messages.success(request, 'You have been successfully logged in!')
-            if user.info.designation == 'Admin':
-                return redirect('/')
-            elif user.info.designation == 'Convenor':
-                return redirect(reverse('club_view', args = [user.club_set.first().id]))
-            else:
-                return redirect(reverse('index_member', args = [user.club_set.first().id]))
+            return redirect('/')
         else:
             messages.info(request, 'Invalid Credentials')
             return redirect('login')

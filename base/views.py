@@ -31,13 +31,11 @@ def admin_or_convenor_check(user):
     return (user.info.designation == 'Convenor' or user.info.designation == 'Admin')
 
 
-# Views are implemented here
 @login_required(login_url='login')
 # login_url is the page to be redirected to in case the function evaluates to false
-@user_passes_test(admin_check, login_url='error_page')
-def index(request):
 
-    clubs = Club.objects.all()
+def index(request):
+    clubs = request.user.club_set.all()
     context = {'clubs': clubs}
     return render(request, 'index.html', context)
 
