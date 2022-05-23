@@ -12,4 +12,4 @@ class CreateUserForm(UserCreationForm):
 class InfoForm(forms.ModelForm):
     class Meta:
         model = Info
-        fields = ['roll_no', 'designation', 'user']
+        fields = ['roll_no', 'user']
