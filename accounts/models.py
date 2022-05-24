@@ -11,6 +11,9 @@ class Permission(models.Model):
     actions = models.CharField(max_length=255)
     description = models.TextField()
 
+    def __str__(self):
+        return self.actions[:20]
+
 class Role(models.Model):
 
     MEMBER = 'member'
@@ -30,8 +33,8 @@ class Role(models.Model):
         return self.name
 
 class Permission_Assignment(models.Model):
-    club_id = models.ForeignKey(Club,blank=True, null = True, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, blank=False, null = False, on_delete=models.CASCADE)
+    club = models.ForeignKey(Club,blank=True, null = True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=False, null = False, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, blank=False, null = False, on_delete=models.CASCADE)
 
     def __str__(self):
