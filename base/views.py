@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from base.models import Club, Request, Item
+from accounts.models import Permission_Assignment, Permission
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -13,6 +14,20 @@ from accounts.forms import *
 from math import ceil
 
 # Functions to check user type and authorisation thereby
+
+
+def can_user_access(user_id, club_id, action):
+    user_permissions = Permission_Assignment.objects.get(
+        club_id=club_id, user_id=user_id).role.permissions.all()
+
+    permissions_string = ""
+    for permission in user_permissions:
+        permissions_string += permission.actions + ","
+
+    permissions_array = permissions_string.split(",")[:-1]
+    if action in permissions_array:
+        return True
+    return False
 
 
 def admin_check(user):
@@ -33,10 +48,15 @@ def admin_or_convenor_check(user):
 
 @login_required(login_url='login')
 # login_url is the page to be redirected to in case the function evaluates to false
-
 def index(request):
     clubs = request.user.club_set.all()
-    context = {'clubs': clubs}
+    can_add_club = False
+
+    if request.user.is_superuser:
+        clubs = Club.objects.all()
+        can_add_club = True
+
+    context = {'clubs': clubs, 'can_add_club': can_add_club}
     return render(request, 'index.html', context)
 
 
@@ -62,13 +82,14 @@ def index_member(request, pk):
     else:
         return redirect('error_page')
 
+
 @login_required(login_url='login')
 @user_passes_test(admin_check, login_url='error_page')
 def user_add(request, pk):
-    club = Club.objects.get(id = pk)
+    club = Club.objects.get(id=pk)
     user_form = CreateUserForm()
     info_form = InfoForm()
-    context = {'user_form':user_form, 'info_form':info_form, 'club':club}
+    context = {'user_form': user_form, 'info_form': info_form, 'club': club}
 
     if request.method == 'POST':
         user_form = CreateUserForm(request.POST)
@@ -76,44 +97,45 @@ def user_add(request, pk):
 
         if user_form.is_valid():
             user_form.save()
-            
-            #Getting required data to display message 
+
+            # Getting required data to display message
             first_name = user_form.cleaned_data.get('first_name')
             last_name = user_form.cleaned_data.get('last_name')
             username = user_form.cleaned_data.get('username')
-            
-            #Getting required data from info_form
-            roll_no = request.POST['roll_no']
-            designation = request.POST['designation']
-            user = User.objects.get(username = username)
 
-            #Creating an Info object linked to this user
-            user_info = Info(user = user, roll_no=roll_no, designation=designation)
+            # Getting required data from info_form
+            roll_no = request.POST['roll_no']
+            user = User.objects.get(username=username)
+
+            # Creating an Info object linked to this user
+            user_info = Info(user=user, roll_no=roll_no)
             user_info.save()
 
-            #Adding user to club
+            # Adding user to club
             club.users.add(user)
-            
-            messages.success(request, f'Account was successfully created for {first_name} {last_name} and added to {club.club_name}!')
+
+            messages.success(
+                request, f'Account was successfully created for {first_name} {last_name} and added to {club.club_name}!')
             return redirect(reverse('club_view', args=[pk]))
         else:
             messages.info(request, 'Error creating user')
 
     return render(request, 'user_add.html', context)
 
+
 @login_required(login_url='login')
 @user_passes_test(admin_check, login_url='error_page')
 def user_delete(request, user_id):
-    user = User.objects.get(id = user_id)
+    user = User.objects.get(id=user_id)
     club = user.club_set.first()
     user.delete()
     messages.info(request, 'User deleted successfully!')
     return redirect(reverse('club_view', args=[club.id]))
 
+
 @login_required(login_url='login')
 @user_passes_test(admin_check, login_url='error_page')
 def club_add(request):
-
     # Adding a new club
     form = ClubForm()
     if request.method == 'POST':
@@ -129,10 +151,10 @@ def club_add(request):
 @login_required(login_url='login')
 @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def club_view(request, pk):
-    if admin_check(request.user) or request.user.club_set.first().id == pk:
+    if can_user_access(request.user.id, pk, "club_view"):
         # Display all users belonging to that club
         club = Club.objects.get(id=pk)
-        members = club.users.all().order_by('info__designation')
+        members = club.users.all()
         context = {'club': club, 'members': members}
 
         return render(request, 'club_view.html', context)
@@ -200,15 +222,16 @@ def item_update(request, pk, item_id):
                 messages.success(request, 'Item updated successfully!')
                 return redirect(reverse('items_view', args=[item.club.id]))
 
-        context = {'club': club, 'form': form, 'item':item}
+        context = {'club': club, 'form': form, 'item': item}
         return render(request, 'item_update.html', context)
     else:
         return redirect('error_page')
 
+
 @login_required(login_url='login')
 @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def item_delete(request, item_id):
-    item = Item.objects.get(id = item_id)
+    item = Item.objects.get(id=item_id)
     club_id = item.club.id
     item.delete()
     messages.info(request, 'Item deleted successfully!')
@@ -237,7 +260,8 @@ def request_approve(request, request_id):
                 fail_silently=False,
             )
         except:
-            messages.info(request, 'The mail has not been sent. Please check your host connection.')
+            messages.info(
+                request, 'The mail has not been sent. Please check your host connection.')
         messages.success(request, 'Request approved successfully!')
         return redirect(reverse('items_view', args=[club_id]))
     else:
@@ -254,17 +278,18 @@ def request_reject(request, request_id):
     req.status = 'Rejected'
     req.save()
 
-    #Email the user about the denial
+    # Email the user about the denial
     try:
         send_mail(
-                'InvManage',
-                f'Sorry! Your request for {req.qty} {req.item.item_name} has been rejected by the Conevnor of {req.item.club.club_name}.',
-                settings.EMAIL_HOST_USER,
-                req.requested_by.email.split(),
-                fail_silently=False,
-            )
+            'InvManage',
+            f'Sorry! Your request for {req.qty} {req.item.item_name} has been rejected by the Conevnor of {req.item.club.club_name}.',
+            settings.EMAIL_HOST_USER,
+            req.requested_by.email.split(),
+            fail_silently=False,
+        )
     except:
-        messages.info(request, 'The mail has not been sent. Please check your host connection.')
+        messages.info(
+            request, 'The mail has not been sent. Please check your host connection.')
     messages.info(request, 'Request rejected successfully!')
     return redirect(reverse('items_view', args=[club_id]))
 
@@ -310,7 +335,8 @@ def request_add(request, pk):
                         fail_silently=False,
                     )
                 except:
-                    messages.info(request, 'The mail has not been sent. Please check your host connection.')
+                    messages.info(
+                        request, 'The mail has not been sent. Please check your host connection.')
                 return redirect(reverse('index_member', args=[pk]))
         context = {'club': club, 'form': form}
         return render(request, 'request_add.html', context)
