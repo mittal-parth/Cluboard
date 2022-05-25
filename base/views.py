@@ -246,22 +246,54 @@ def item_delete(request, item_id):
         return redirect('error_page')
 
 @login_required(login_url='login')
-@user_passes_test(convenor_check, login_url='error_page')
+# @user_passes_test(convenor_check, login_url='error_page')
 def request_approve(request, request_id):
     # Approve the request if there is sufficient quantity available
     req = Request.objects.get(id=request_id)
     club_id = req.item.club.id
-    if req.item.qty - req.qty >= 0:
-        req.item.qty -= req.qty
-        req.status = 'Approved'
-        req.item.save()
+    if can_user_access(request.user.id, club_id,'request_approve'):
+        if req.item.qty - req.qty >= 0:
+            req.item.qty -= req.qty
+            req.status = 'Approved'
+            req.item.save()
+            req.save()
+
+            # Email the user about the approval
+            try:
+                send_mail(
+                    'InvManage',
+                    f'Yay! Your request for {req.qty} {req.item.item_name} has been approved by the Convenor of {req.item.club.club_name}!',
+                    settings.EMAIL_HOST_USER,
+                    req.requested_by.email.split(),
+                    fail_silently=False,
+                )
+            except:
+                messages.info(
+                    request, 'The mail has not been sent. Please check your host connection.')
+            messages.success(request, 'Request approved successfully!')
+            return redirect(reverse('items_view', args=[club_id]))
+        else:
+            messages.info(
+                request, 'Request cannot be approved - Insufficient Quantity')
+            return redirect(reverse('items_view', args=[club_id]))
+    else:
+        return redirect('error_page')
+
+
+@login_required(login_url='login')
+# @user_passes_test(convenor_check, login_url='error_page')
+def request_reject(request, request_id):
+    req = Request.objects.get(id=request_id)
+    club_id = req.item.club.id
+    if can_user_access(request.user.id, club_id,'request_reject'):
+        req.status = 'Rejected'
         req.save()
 
-        # Email the user about the approval
+        # Email the user about the denial
         try:
             send_mail(
                 'InvManage',
-                f'Yay! Your request for {req.qty} {req.item.item_name} has been approved by the Convenor of {req.item.club.club_name}!',
+                f'Sorry! Your request for {req.qty} {req.item.item_name} has been rejected by the Conevnor of {req.item.club.club_name}.',
                 settings.EMAIL_HOST_USER,
                 req.requested_by.email.split(),
                 fail_silently=False,
@@ -269,42 +301,16 @@ def request_approve(request, request_id):
         except:
             messages.info(
                 request, 'The mail has not been sent. Please check your host connection.')
-        messages.success(request, 'Request approved successfully!')
+        messages.info(request, 'Request rejected successfully!')
         return redirect(reverse('items_view', args=[club_id]))
     else:
-        messages.info(
-            request, 'Request cannot be approved - Insufficient Quantity')
-        return redirect(reverse('items_view', args=[club_id]))
+        return redirect('error_page')
 
 
 @login_required(login_url='login')
-@user_passes_test(convenor_check, login_url='error_page')
-def request_reject(request, request_id):
-    req = Request.objects.get(id=request_id)
-    club_id = req.item.club.id
-    req.status = 'Rejected'
-    req.save()
-
-    # Email the user about the denial
-    try:
-        send_mail(
-            'InvManage',
-            f'Sorry! Your request for {req.qty} {req.item.item_name} has been rejected by the Conevnor of {req.item.club.club_name}.',
-            settings.EMAIL_HOST_USER,
-            req.requested_by.email.split(),
-            fail_silently=False,
-        )
-    except:
-        messages.info(
-            request, 'The mail has not been sent. Please check your host connection.')
-    messages.info(request, 'Request rejected successfully!')
-    return redirect(reverse('items_view', args=[club_id]))
-
-
-@login_required(login_url='login')
-@user_passes_test(member_check, login_url='error_page')
+# @user_passes_test(member_check, login_url='error_page')
 def request_add(request, pk):
-    if request.user.club_set.first().id == pk:
+    if can_user_access(request.user.id, pk,'request_add'):
         club = Club.objects.get(id=pk)
 
         # Pre-filling a form with required values
@@ -326,9 +332,8 @@ def request_add(request, pk):
             requested_by = request.user.first_name + ' ' + request.user.last_name
 
             # Email of the convenor of the respective club
-            convenors = User.objects.filter(
-                info__designation='Convenor').filter(club__id=pk)
-            emails_convenors = convenors.values_list('email')
+            convenors = Permission_Assignment.objects.filter(club = pk, role__name='convenor')
+            convenors_emails = convenors.values_list('user__email', flat=True) 
 
             if form.is_valid():
                 form.save()
@@ -338,13 +343,13 @@ def request_add(request, pk):
                         'InvManage',
                         f'There is a new request for an item by {requested_by}, member at {club.club_name}.',
                         settings.EMAIL_HOST_USER,
-                        emails_convenors[0],
+                        convenors_emails,
                         fail_silently=False,
                     )
                 except:
                     messages.info(
                         request, 'The mail has not been sent. Please check your host connection.')
-                return redirect(reverse('index_member', args=[pk]))
+                return redirect(reverse('items_view', args=[pk]))
         context = {'club': club, 'form': form}
         return render(request, 'request_add.html', context)
     else:
