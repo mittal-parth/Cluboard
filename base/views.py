@@ -212,10 +212,10 @@ def items_view(request, pk):
 
 
 @login_required(login_url='login')
-@user_passes_test(admin_or_convenor_check, login_url='error_page')
+# @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def item_update(request, pk, item_id):
     # Update an existing item
-    if admin_check(request.user) or request.user.club_set.first().id == pk:
+    if can_user_access(request.user.id, pk,'item_update'):
         item = Item.objects.get(id=item_id)
         club = Club.objects.get(id=pk)
         form = ItemForm(instance=item)
@@ -234,14 +234,16 @@ def item_update(request, pk, item_id):
 
 
 @login_required(login_url='login')
-@user_passes_test(admin_or_convenor_check, login_url='error_page')
+# @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def item_delete(request, item_id):
     item = Item.objects.get(id=item_id)
     club_id = item.club.id
-    item.delete()
-    messages.info(request, 'Item deleted successfully!')
-    return redirect(reverse('items_view', args=[club_id]))
-
+    if can_user_access(request.user.id, club_id,'item_delete'):
+        item.delete()
+        messages.info(request, 'Item deleted successfully!')
+        return redirect(reverse('items_view', args=[club_id]))
+    else:
+        return redirect('error_page')
 
 @login_required(login_url='login')
 @user_passes_test(convenor_check, login_url='error_page')
