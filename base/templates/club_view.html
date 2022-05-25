@@ -1,15 +1,20 @@
 {% extends 'main.html' %}
-
+{% load can_user_access_tag %}
+{% load user_role_tag %}
 {% block title %}{{club.club_name}}{% endblock title %}
 
 {% block body %}
-
-    <h3 class="mx-4 my-1">Users 
-    {% if request.user.info.designation == 'Admin' %}
-    <a id="add-link" href="{% url 'user_add' club.id %}"><i
-                class="fa fa-plus-circle"></i></a>
-    {% endif %}
-    </h3>
+<div class="container my-5 neumorphism-card">
+    <div style="margin: auto; width: 50%; margin-bottom: 20px; text-align: center;">
+        <h3 class="mx-4 my-1">Users 
+        {% can_user_access user.id 'user_add' club.id as can_user_add %}
+        {% if can_user_add %}
+            <a id="add-link" href="{% url 'user_add' club.id %}"><i
+                    class="fa fa-plus-circle"></i></a>
+        {% endif %}
+        </h3>
+        <hr>
+    </div>
     <div class="card card-body mx-3">
         <table class="table table-striped">
             <thead class="table_head">
@@ -22,8 +27,8 @@
             <tbody>
                 {% for member in members %}
                 <tr>
-                    <td> <a href="{% url 'profile' club.id member.id %}">{{member.first_name}} {{member.last_name}}</a></td>
-                    <td>{{member.info.designation}}</td>
+                    <td> <a href="{% url 'profile' member.id %}">{{member.first_name}} {{member.last_name}}</a></td>
+                    <td>{% user_role member.id club.id %}</td>
                     <td>{{member.info.roll_no}}</td>
 
                 </tr>
@@ -36,5 +41,5 @@
             </tbody>
         </table>
     </div>
-
+</div>
 {% endblock body %}
