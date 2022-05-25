@@ -1,11 +1,18 @@
 {% extends 'main.html' %}
+{% load custom_tags %}
 {% block title %}Items{% endblock title %}
 
 {% block body %}
 
 <div>
-    <h3 class="my-3 mx-4">Items <a id="add-link" href="{% url 'item_add' club.id %}"><i
-                class="fa fa-plus-circle"></i></a></h3>
+    <h3 class="my-3 mx-4">Items 
+        {% can_user_access user.id club.id 'item_add' as can_item_add %}
+        {% if can_item_add %}
+            <a id="add-link" href="{% url 'item_add' club.id %}">
+                <i class="fa fa-plus-circle"></i>
+            </a>
+        {% endif %}
+    </h3>
 </div>
 <div class="container my-5">
     {% for items, range, nSlides in all_items %}
@@ -22,10 +29,20 @@
                         <div class="card_item" style="width: 220px;">
                             <img src="/media/{{i.image}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px">
                             {% comment %} <img src="{{i.image.url}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px"> {% endcomment %}
-                            <a href="{% url 'item_update' club.id i.id %}"><div class="card-body">
-                                <h5 class="card-title">{{i.item_name}}</h5>
-                                <p class="card-text">{{i.qty}}</p>
-                            </div></a>
+                            {% can_user_access user.id club.id 'item_update' as can_item_update %}
+                            {% if can_item_update %}
+                                <a href="{% url 'item_update' club.id i.id %}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{i.item_name}}</h5>
+                                        <p class="card-text">{{i.qty}}</p>
+                                    </div>
+                                </a>
+                            {% else %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{i.item_name}}</h5>
+                                    <p class="card-text">{{i.qty}}</p>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
@@ -34,10 +51,10 @@
 
             <div class="carousel-item">
                 <div class="row">
-                    {%endif%}
+                    {% endif %}
                     {% empty %}
                     <p>No items yet!</p>
-                    {%endfor%}
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -56,7 +73,14 @@
     {% endfor %}
 </div>
 <div>
-    <h3 class="my-3 mx-3">Requests</h3>
+    <h3 class="my-3 mx-3">Requests
+    {% can_user_access user.id club.id 'request_add' as can_request_add %}
+    {% if can_request_add %}
+    <a id="add-link" href="{% url 'request_add' club.id %}">
+        <i class="fa fa-plus-circle"></i>
+    </a>
+    {% endif %}
+    </h3>
 </div>
 
 <div class="card card-body mx-4">
@@ -80,18 +104,19 @@
                 <td>{{ req.qty }}</td>
                 <td>{{ req.date_created }}</td>
                 <td>
-                    {% if request.user.info.designation == 'Admin' %}
-                    {{ req.status }}
+                    {% can_user_access user.id club.id 'request_approve' as can_request_approve %}
+                    {% if can_request_approve %}
+                        {% if req.status == 'Approved' %}
+                            <button type="button" class="btn btn-success" disabled>Approved</button>
+                        {% elif req.status == 'Rejected' %}
+                            <button type="button" class="btn btn-danger" disabled>Rejected</button>
+                        {% else %}
+                            <a type="button" href="{% url 'request_approve' req.id %}" class="btn btn-success">Approve</a>
+                            <a type="button" href="{% url 'request_reject' req.id %}" class="btn btn-danger">Reject</a>
+                        {% endif %}
                     {% else %}
-                    {% if req.status == 'Approved' %}
-                    <button type="button" class="btn btn-success" disabled>Approved</button>
-                    {% elif req.status == 'Rejected' %}
-                    <button type="button" class="btn btn-danger" disabled>Rejected</button>
-                    {% else %}
-                    <a type="button" href="{% url 'request_approve' req.id %}" class="btn btn-success">Approve</a>
-                    <a type="button" href="{% url 'request_reject' req.id %}" class="btn btn-danger">Reject</a>
-                    {% endif %}
-                    {% endif %}
+                        {{ user.id }}
+                    {% endif %} 
                 </td>
             </tr>
             {% empty %}

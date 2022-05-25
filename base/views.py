@@ -17,16 +17,21 @@ from math import ceil
 
 
 def can_user_access(user_id, club_id, action):
-    user_permissions = Permission_Assignment.objects.get(
-        club_id=club_id, user_id=user_id).role.permissions.all()
+    user_permissions = ''
+    try:
+        user_permissions = Permission_Assignment.objects.get(
+            club=club_id, user=user_id).role.permissions.all()
+    except:
+        Permission_Assignment.DoesNotExist
+  
+    if user_permissions:
+        permissions_string = ""
+        for permission in user_permissions:
+            permissions_string += permission.actions + ","
 
-    permissions_string = ""
-    for permission in user_permissions:
-        permissions_string += permission.actions + ","
-
-    permissions_array = permissions_string.split(",")[:-1]
-    if action in permissions_array:
-        return True
+        permissions_array = permissions_string.split(",")[:-1]
+        if action in permissions_array:
+            return True
     return False
 
 
@@ -186,9 +191,9 @@ def item_add(request, pk):
 
 
 @login_required(login_url='login')
-@user_passes_test(admin_or_convenor_check, login_url='error_page')
+# @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def items_view(request, pk):
-    if admin_check(request.user) or request.user.club_set.first().id == pk:
+    if can_user_access(request.user.id, pk, 'items_view'):
         # Display all items belonging to that club as a carousel of cards
         club = Club.objects.get(id=pk)
         items = club.item_set.all()
@@ -198,7 +203,10 @@ def items_view(request, pk):
         all_items.append([items, range(1, nSlides), nSlides])
 
         # Display all requests pertaining to that club
-        reqs = club.request_set.all().order_by('-date_created')
+        reqs = request.user.request_set.all().order_by('-date_created')
+
+        if can_user_access(request.user.id, pk, 'request_approve'):
+            reqs = club.request_set.all().order_by('-date_created')
 
         context = {'club': club, 'all_items': all_items, 'reqs': reqs}
         return render(request, 'items_view.html', context)
