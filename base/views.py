@@ -55,13 +55,11 @@ def admin_or_convenor_check(user):
 # login_url is the page to be redirected to in case the function evaluates to false
 def index(request):
     clubs = request.user.club_set.all()
-    can_add_club = False
 
     if request.user.is_superuser:
         clubs = Club.objects.all()
-        can_add_club = True
 
-    context = {'clubs': clubs, 'can_add_club': can_add_club}
+    context = {'clubs': clubs}
     return render(request, 'index.html', context)
 
 
@@ -168,10 +166,9 @@ def club_view(request, pk):
 
 
 @login_required(login_url='login')
-@user_passes_test(admin_or_convenor_check, login_url='error_page')
+# @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def item_add(request, pk):
-
-    if admin_check(request.user) or request.user.club_set.first().id == pk:
+    if can_user_access(request.user.id, pk,'item_add'):
         club = Club.objects.get(id=pk)
         initial = {'club': club}
 
