@@ -16,14 +16,20 @@ from math import ceil
 # Functions to check user type and authorisation thereby
 
 
-def can_user_access(user_id, club_id, action):
+def can_user_access(user_id, action, club_id = None):
     user_permissions = ''
-    try:
-        user_permissions = Permission_Assignment.objects.get(
-            club=club_id, user=user_id).role.permissions.all()
-    except:
-        Permission_Assignment.DoesNotExist
-  
+    if club_id:
+        try:
+            user_permissions = Permission_Assignment.objects.get(
+                club=club_id, user=user_id).role.permissions.all()
+        except:
+            Permission_Assignment.DoesNotExist
+    else:
+        try:
+            user_permissions = Permission_Assignment.objects.get(
+                user=user_id).role.permissions.all()
+        except:
+            Permission_Assignment.DoesNotExist
     if user_permissions:
         permissions_string = ""
         for permission in user_permissions:
@@ -154,7 +160,7 @@ def club_add(request):
 @login_required(login_url='login')
 @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def club_view(request, pk):
-    if can_user_access(request.user.id, pk, "club_view"):
+    if can_user_access(request.user.id, "club_view", pk):
         # Display all users belonging to that club
         club = Club.objects.get(id=pk)
         members = club.users.all()
@@ -168,7 +174,7 @@ def club_view(request, pk):
 @login_required(login_url='login')
 # @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def item_add(request, pk):
-    if can_user_access(request.user.id, pk,'item_add'):
+    if can_user_access(request.user.id, 'item_add', pk):
         club = Club.objects.get(id=pk)
         initial = {'club': club}
 
@@ -186,11 +192,13 @@ def item_add(request, pk):
     else:
         return redirect('error_page')
 
+def view_all_requests(club):
+    return club.request_set.all().order_by('-date_created')
 
 @login_required(login_url='login')
 # @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def items_view(request, pk):
-    if can_user_access(request.user.id, pk, 'items_view'):
+    if can_user_access(request.user.id, 'items_view', pk):
         # Display all items belonging to that club as a carousel of cards
         club = Club.objects.get(id=pk)
         items = club.item_set.all()
@@ -200,10 +208,10 @@ def items_view(request, pk):
         all_items.append([items, range(1, nSlides), nSlides])
 
         # Display all requests pertaining to that club
-        reqs = request.user.request_set.all().order_by('-date_created')
+        reqs = view_all_requests(club)
 
-        if can_user_access(request.user.id, pk, 'request_approve'):
-            reqs = club.request_set.all().order_by('-date_created')
+        if can_user_access(request.user.id, 'view_all_requests',pk) == False:
+            reqs = reqs.filter(requested_by = request.user.id)
 
         context = {'club': club, 'all_items': all_items, 'reqs': reqs}
         return render(request, 'items_view.html', context)
@@ -215,7 +223,7 @@ def items_view(request, pk):
 # @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def item_update(request, pk, item_id):
     # Update an existing item
-    if can_user_access(request.user.id, pk,'item_update'):
+    if can_user_access(request.user.id,'item_update', pk):
         item = Item.objects.get(id=item_id)
         club = Club.objects.get(id=pk)
         form = ItemForm(instance=item)
@@ -238,7 +246,7 @@ def item_update(request, pk, item_id):
 def item_delete(request, item_id):
     item = Item.objects.get(id=item_id)
     club_id = item.club.id
-    if can_user_access(request.user.id, club_id,'item_delete'):
+    if can_user_access(request.user.id, 'item_delete', club_id):
         item.delete()
         messages.info(request, 'Item deleted successfully!')
         return redirect(reverse('items_view', args=[club_id]))
@@ -251,7 +259,7 @@ def request_approve(request, request_id):
     # Approve the request if there is sufficient quantity available
     req = Request.objects.get(id=request_id)
     club_id = req.item.club.id
-    if can_user_access(request.user.id, club_id,'request_approve'):
+    if can_user_access(request.user.id, 'request_approve', club_id):
         if req.item.qty - req.qty >= 0:
             req.item.qty -= req.qty
             req.status = 'Approved'
@@ -285,7 +293,7 @@ def request_approve(request, request_id):
 def request_reject(request, request_id):
     req = Request.objects.get(id=request_id)
     club_id = req.item.club.id
-    if can_user_access(request.user.id, club_id,'request_reject'):
+    if can_user_access(request.user.id, 'request_reject', club_id):
         req.status = 'Rejected'
         req.save()
 
@@ -310,7 +318,7 @@ def request_reject(request, request_id):
 @login_required(login_url='login')
 # @user_passes_test(member_check, login_url='error_page')
 def request_add(request, pk):
-    if can_user_access(request.user.id, pk,'request_add'):
+    if can_user_access(request.user.id,'request_add', pk):
         club = Club.objects.get(id=pk)
 
         # Pre-filling a form with required values

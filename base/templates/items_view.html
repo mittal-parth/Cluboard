@@ -6,7 +6,7 @@
 
 <div>
     <h3 class="my-3 mx-4">Items 
-        {% can_user_access user.id club.id 'item_add' as can_item_add %}
+        {% can_user_access user.id 'item_add' club.id as can_item_add %}
         {% if can_item_add %}
             <a id="add-link" href="{% url 'item_add' club.id %}">
                 <i class="fa fa-plus-circle"></i>
@@ -29,7 +29,7 @@
                         <div class="card_item" style="width: 220px;">
                             <img src="/media/{{i.image}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px">
                             {% comment %} <img src="{{i.image.url}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px"> {% endcomment %}
-                            {% can_user_access user.id club.id 'item_update' as can_item_update %}
+                            {% can_user_access user.id 'item_update' club.id as can_item_update %}
                             {% if can_item_update %}
                                 <a href="{% url 'item_update' club.id i.id %}">
                                     <div class="card-body">
@@ -74,7 +74,7 @@
 </div>
 <div>
     <h3 class="my-3 mx-3">Requests
-    {% can_user_access user.id club.id 'request_add' as can_request_add %}
+    {% can_user_access user.id 'request_add' club.id as can_request_add %}
     {% if can_request_add %}
     <a id="add-link" href="{% url 'request_add' club.id %}">
         <i class="fa fa-plus-circle"></i>
@@ -104,7 +104,7 @@
                 <td>{{ req.qty }}</td>
                 <td>{{ req.date_created }}</td>
                 <td>
-                    {% can_user_access user.id club.id 'request_approve' as can_request_approve %}
+                    {% can_user_access user.id 'request_approve' club.id as can_request_approve %}
                     {% if can_request_approve %}
                         {% if req.status == 'Approved' %}
                             <button type="button" class="btn btn-success" disabled>Approved</button>
@@ -115,7 +115,7 @@
                             <a type="button" href="{% url 'request_reject' req.id %}" class="btn btn-danger">Reject</a>
                         {% endif %}
                     {% else %}
-                        {{ user.id }}
+                        {{ req.status }}
                     {% endif %} 
                 </td>
             </tr>
