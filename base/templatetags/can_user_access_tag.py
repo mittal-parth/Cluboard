@@ -27,3 +27,4 @@ def can_user_access(user_id, action, club_id = None):
         if action in permissions_array:
             return True
     return False
+

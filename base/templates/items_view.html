@@ -1,5 +1,5 @@
 {% extends 'main.html' %}
-{% load custom_tags %}
+{% load can_user_access_tag %}
 {% block title %}Items{% endblock title %}
 
 {% block body %}
@@ -87,8 +87,8 @@
         <hr>
     </div>
 
-    <div class="card card-body mx-4 ">
-        <table class="table table-striped">
+    <div class="mx-4 ">
+        <table class="table table-striped" id="items_table" style="width: 100%">
             <thead class="table_head">
                 <tr>
                     <th scope="col">Requested By</th>
@@ -124,7 +124,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <!--If there are no members-->
+                <!--If there are no items-->
                 <tr>
                     <td colspan="6">No requests yet!</td>
                 </tr>
@@ -133,4 +133,9 @@
         </table>
     </div>
 </div>
+<!-- <script>
+    $(document).ready( function () {
+        $('#items_table').DataTable();
+    } );
+</script> -->
 {% endblock body %}
