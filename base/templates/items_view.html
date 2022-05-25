@@ -4,17 +4,19 @@
 
 {% block body %}
 
-<div>
-    <h3 class="my-3 mx-4">Items 
-        {% can_user_access user.id 'item_add' club.id as can_item_add %}
-        {% if can_item_add %}
-            <a id="add-link" href="{% url 'item_add' club.id %}">
-                <i class="fa fa-plus-circle"></i>
-            </a>
-        {% endif %}
-    </h3>
-</div>
-<div class="container my-5">
+
+<div class="container my-5 neumorphism-card">
+    <div style="margin: auto; width: 50%; margin-bottom: 20px; text-align: center;">
+        <h3 style="margin: auto; width: 50%;">Items 
+            {% can_user_access user.id 'item_add' club.id as can_item_add %}
+            {% if can_item_add %}
+                <a id="add-link" href="{% url 'item_add' club.id %}">
+                    <i class="fa fa-plus-circle"></i>
+                </a>
+            {% endif %}
+        </h3>
+        <hr>
+    </div>
     {% for items, range, nSlides in all_items %}
     <div id="carouselControls{{forloop.counter}}" class="carousel slide my-3" data-bs-ride="carousel">
         <div class="carousel-inner">
@@ -72,61 +74,63 @@
 
     {% endfor %}
 </div>
-<div>
-    <h3 class="my-3 mx-3">Requests
-    {% can_user_access user.id 'request_add' club.id as can_request_add %}
-    {% if can_request_add %}
-    <a id="add-link" href="{% url 'request_add' club.id %}">
-        <i class="fa fa-plus-circle"></i>
-    </a>
-    {% endif %}
-    </h3>
-</div>
+<div class="container neumorphism-card">
+    <div style="margin: auto; width: 50%; margin-bottom: 20px; text-align: center;">
+        <h3 style="margin: auto; width: 50%;">Requests
+        {% can_user_access user.id 'request_add' club.id as can_request_add %}
+        {% if can_request_add %}
+        <a id="add-link" href="{% url 'request_add' club.id %}">
+            <i class="fa fa-plus-circle"></i>
+        </a>
+        {% endif %}
+        </h3>
+        <hr>
+    </div>
 
-<div class="card card-body mx-4">
-    <table class="table table-striped">
-        <thead class="table_head">
-            <tr>
-                <th scope="col">Requested By</th>
-                <th scope="col">Roll No</th>
-                <th scope="col">Item</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Date Created</th>
-                <th scope="col">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for req in reqs %}
-            <tr>
-                <td>{{ req.requested_by.first_name }} {{ req.requested_by.last_name }}</td>
-                <td>{{ req.requested_by.info.roll_no }}</td>
-                <td>{{ req.item|truncatewords:1 }}</td>
-                <td>{{ req.qty }}</td>
-                <td>{{ req.date_created }}</td>
-                <td>
-                    {% can_user_access user.id 'request_approve' club.id as can_request_approve %}
-                    {% if can_request_approve %}
-                        {% if req.status == 'Approved' %}
-                            <button type="button" class="btn btn-success" disabled>Approved</button>
-                        {% elif req.status == 'Rejected' %}
-                            <button type="button" class="btn btn-danger" disabled>Rejected</button>
+    <div class="card card-body mx-4 ">
+        <table class="table table-striped">
+            <thead class="table_head">
+                <tr>
+                    <th scope="col">Requested By</th>
+                    <th scope="col">Roll No</th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Date Created</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in reqs %}
+                <tr>
+                    <td>{{ req.requested_by.first_name }} {{ req.requested_by.last_name }}</td>
+                    <td>{{ req.requested_by.info.roll_no }}</td>
+                    <td>{{ req.item|truncatewords:1 }}</td>
+                    <td>{{ req.qty }}</td>
+                    <td>{{ req.date_created }}</td>
+                    <td>
+                        {% can_user_access user.id 'request_approve' club.id as can_request_approve %}
+                        {% if can_request_approve %}
+                            {% if req.status == 'Approved' %}
+                                <button type="button" class="btn btn-success" disabled>Approved</button>
+                            {% elif req.status == 'Rejected' %}
+                                <button type="button" class="btn btn-danger" disabled>Rejected</button>
+                            {% else %}
+                                <a type="button" href="{% url 'request_approve' req.id %}" class="btn btn-success">Approve</a>
+                                <a type="button" href="{% url 'request_reject' req.id %}" class="btn btn-danger">Reject</a>
+                            {% endif %}
                         {% else %}
-                            <a type="button" href="{% url 'request_approve' req.id %}" class="btn btn-success">Approve</a>
-                            <a type="button" href="{% url 'request_reject' req.id %}" class="btn btn-danger">Reject</a>
-                        {% endif %}
-                    {% else %}
-                        {{ req.status }}
-                    {% endif %} 
-                </td>
-            </tr>
-            {% empty %}
-            <!--If there are no members-->
-            <tr>
-                <td colspan="6">No requests yet!</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                            {{ req.status }}
+                        {% endif %} 
+                    </td>
+                </tr>
+                {% empty %}
+                <!--If there are no members-->
+                <tr>
+                    <td colspan="6">No requests yet!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
-
 {% endblock body %}

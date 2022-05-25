@@ -4,13 +4,14 @@
 
 {% block body %} 
 
-    <div class="mx-4 my-4">
+    <div class="card my-4 neumorphism-card" style="width: 50%; margin: auto;">
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{form.as_p}}
             <button type="submit">Update Item</button>
             <a type="button" href="{% url 'item_delete' item.id %}" class="button">Delete</a>
         </form>
+
     </div>
 
     

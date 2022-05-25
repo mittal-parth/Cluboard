@@ -1,19 +1,25 @@
-{% extends 'main_admin.html' %}
-
+{% extends 'base.html' %}
+{% load custom_tags %}
 {% block title %}Home{% endblock title %}
 
 {% block body %}
 
-<div class="container">
-    <div class="my-3">
-        <h3>Clubs <a id="add-link" href="{% url 'club_add' %}"><i class="fa fa-plus-circle"></i></a></h3>
+<div class="container neumorphism-card my-5" >
+    <div style="margin: auto; width: 50%; margin-bottom: 20px; text-align: center;">
+        <h3 style="margin: auto; width: 50%;">Clubs
+            {% can_user_access user.id 'club_add' club.id as can_club_add %}
+            {% if can_club_add %} 
+                <a id="add-link" href="{% url 'club_add' %}"><i class="fa fa-plus-circle"></i></a>
+            {% endif %}
+        </h3>
+        <hr>
     </div>
     <div class="cards mx-0">
         {% for club in clubs %}
-        <div class="card mx-3 my-5" style="width: 12rem; height: 17rem;">
+        <div class="card mx-3 my-2" style="width: 12rem; height: 17rem;">
             <img class="card-img-top" src="/media/{{club.logo}}" height="180px" width="180px">
             <div class="card-body">
-                <p class="card-title"><a href="{% url 'club_view' club.id %}">{{club.club_name}}</p></a>
+                <p class="card-title"><a href="{% url 'items_view' club.id %}">{{club.club_name}}</p></a>
             </div>
         </div>
         {% endfor %}
