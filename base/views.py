@@ -70,29 +70,6 @@ def index(request):
 
 
 @login_required(login_url='login')
-@user_passes_test(member_check, login_url='error_page')
-def index_member(request, pk):
-
-    # Member should be able to view only their own club's items
-    if request.user.club_set.first().id == pk:
-        # Display all items belonging to that club as a carousel of cards
-        club = Club.objects.get(id=pk)
-        items = club.item_set.all()
-        all_items = []
-        n = len(items)
-        nSlides = n//4 + ceil(n/4-n//4)  # logic for displaying slides
-        all_items.append([items, range(1, nSlides), nSlides])
-
-        # Display all requests made by that user
-        reqs = request.user.request_set.all().order_by('-date_created')
-
-        context = {'club': club, 'all_items': all_items, 'reqs': reqs}
-        return render(request, 'index_member.html', context)
-    else:
-        return redirect('error_page')
-
-
-@login_required(login_url='login')
 @user_passes_test(admin_check, login_url='error_page')
 def user_add(request, pk):
     club = Club.objects.get(id=pk)
@@ -133,13 +110,14 @@ def user_add(request, pk):
 
 
 @login_required(login_url='login')
-@user_passes_test(admin_check, login_url='error_page')
+# @user_passes_test(admin_check, login_url='error_page')
 def user_delete(request, user_id):
-    user = User.objects.get(id=user_id)
-    club = user.club_set.first()
-    user.delete()
-    messages.info(request, 'User deleted successfully!')
-    return redirect(reverse('club_view', args=[club.id]))
+    if can_user_access(request.user.id, 'user_delete'):
+        user = User.objects.get(id=user_id)
+        club = user.club_set.first()
+        user.delete()
+        messages.info(request, 'User deleted successfully!')
+        return redirect(reverse('club_view', args=[club.id]))
 
 
 @login_required(login_url='login')
@@ -158,7 +136,7 @@ def club_add(request):
 
 
 @login_required(login_url='login')
-@user_passes_test(admin_or_convenor_check, login_url='error_page')
+# @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def club_view(request, pk):
     if can_user_access(request.user.id, "club_view", pk):
         # Display all users belonging to that club
