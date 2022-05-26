@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.urls import reverse
 from base.models import Club, Request, Item
-from accounts.models import Permission_Assignment, Permission
+from accounts.models import Permission_Assignment, Role
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -85,7 +85,7 @@ def user_add(request, club_id):
         if request.method == 'POST':
             user_form = CreateUserForm(request.POST)
             info_form = InfoForm(request.POST)
-            permission_assignment_form = PermissionAssignmentForm()
+            permission_assignment_form = PermissionAssignmentForm(request.POST)
             if user_form.is_valid():
                 user_form.save()
 
@@ -101,9 +101,16 @@ def user_add(request, club_id):
                 # Creating an Info object linked to this user
                 user_info = Info(user=user, roll_no=roll_no)
                 user_info.save()
-
+                
                 # Adding user to club
                 club.users.add(user)
+
+                # Assigning role to the user
+                role_id = request.POST['role']
+                role = Role.objects.get(id=role_id)
+                print(role_id, role)
+                permission_assignment = Permission_Assignment(club = club, user = user, role = role)
+                permission_assignment.save()
 
                 messages.success(
                     request, f'Account was successfully created for {first_name} {last_name} and added to {club.club_name}!')

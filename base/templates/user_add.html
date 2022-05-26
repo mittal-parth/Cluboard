@@ -23,6 +23,15 @@
             {% csrf_token %}
             {{user_form.as_p}}
             <p><label class ="form_label">Roll No:</label> {{info_form.roll_no}}</p>
+            <p>
+                <label for="id_role">Role:</label>
+                <select name="role" id="id_role" required>
+                <option value="" selected="">---------</option>
+                <option value="1">member</option>
+                <option value="2">convenor</option>
+                <option value="3">admin</option>
+                </select>
+              </p>
             <button type="submit">Add User</button>
         </form>
     </div>
