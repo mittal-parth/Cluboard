@@ -6,8 +6,8 @@
 
 
 <div class="container my-5 neumorphism-card">
-    <div style="margin: auto; width: 50%; margin-bottom: 20px; text-align: center;">
-        <h3 style="margin: auto; width: 50%;">Items 
+    <div class="centered-text">
+        <h3 class="centered-div">Items 
             {% can_user_access user.id 'item_add' club.id as can_item_add %}
             {% if can_item_add %}
                 <a id="add-link" href="{% url 'item_add' club.id %}">
@@ -75,8 +75,8 @@
     {% endfor %}
 </div>
 <div class="container neumorphism-card">
-    <div style="margin: auto; width: 50%; margin-bottom: 20px; text-align: center;">
-        <h3 style="margin: auto; width: 50%;">Requests
+    <div class="centered-text">
+        <h3 class="centered-div">Requests
         {% can_user_access user.id 'request_add' club.id as can_request_add %}
         {% if can_request_add %}
         <a id="add-link" href="{% url 'request_add' club.id %}">

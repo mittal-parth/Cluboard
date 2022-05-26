@@ -11,7 +11,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!--DataTable  -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.js"></script>
 
     <title>{% block title %}{% endblock title %} | InvManage</title>
     <style>
@@ -69,7 +78,7 @@
 
         }
 
-        button {
+        button, .coloured-button {
             border: 1px solid rgb(51, 47, 47);
             background-color: #25274D;
             color: white;
@@ -91,7 +100,7 @@
         }
 
         label, .form_label{
-            width: 10%;
+            width: 20%;
         }
 
         .neumorphism-card {
@@ -101,6 +110,28 @@
                         -12px -12px 24px #151515;
             padding: 20px;
         }
+
+        .dataTables_length, .dataTables_filter, .dataTables_info,
+        .dataTables_paginate {
+            color: white !important;
+        }
+
+        #items-button,
+        #users-button{
+            display: inline-block;
+            vertical-align: top;
+        }
+        .centered-div {
+            width: 50%;
+            margin: auto;
+        }
+
+        .centered-text {
+            margin: auto;
+            width: 50%;
+            margin-bottom: 20px;
+            text-align: center;
+        }
         /* input[type=file]{
             display: none;
         } */
@@ -108,7 +139,7 @@
        
     </style>
 </head>
-{% load custom_tags %}
+{% load can_user_access_tag %}
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
         <div class="container-fluid">
@@ -118,16 +149,6 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'profile' request.user.id %}">Hi, {{request.user.first_name}}</a>
                     </li>
-                    {% if request.user.info.designation == 'Convenor' or request.user.info.designation == 'Admin' %}
-
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'club_view' club.id %}">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'items_view' club.id %}">Items</a>
-                    </li>
-
-                    {% endif %}
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -158,7 +179,18 @@
                     <h4>{{club.club_name}}</h4>
                     <hr>
                     <p>{{club.description|truncatechars:144 }}</p>
-                    <button type="submit">Members</button>
+                    {% can_user_access user.id 'items_view' club.id as can_items_view %}
+                    {% can_user_access user.id 'club_view' club.id as can_club_view %}
+                    <div class="row">
+                        <div class="col-sm-12">
+                            {% if can_items_view %}
+                                <a type="button" href="{% url 'items_view' club.id %}" class="coloured-button" id="items-button">Items</a>
+                            {% endif %}
+                            {% if can_club_view %}
+                                <a type="button" href="{% url 'club_view' club.id %}" class="coloured-button" id="users-button">Users</a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -166,11 +198,8 @@
 
     {% block body %}{% endblock body %}
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
         crossorigin="anonymous"></script>
 </body>
-
 </html>

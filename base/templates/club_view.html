@@ -5,7 +5,7 @@
 
 {% block body %}
 <div class="container my-5 neumorphism-card">
-    <div style="margin: auto; width: 50%; margin-bottom: 20px; text-align: center;">
+    <div class="centered-text">
         <h3 class="mx-4 my-1">Users 
         {% can_user_access user.id 'user_add' club.id as can_user_add %}
         {% if can_user_add %}

@@ -4,7 +4,7 @@
 
 {% block body %} 
 
-    <div class="card my-4 neumorphism-card" style="width: 50%; margin: auto;">
+    <div class="card my-4 neumorphism-card centered-div">
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{form.as_p}}
