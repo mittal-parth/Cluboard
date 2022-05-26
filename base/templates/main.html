@@ -68,6 +68,7 @@
         input[type=email],
         input[type=password],
         #id_club,#id_requested_by,#id_item, #id_designation,
+        select,
         textarea {
             margin-right: 3px;
             border: 1px solid rgb(51, 47, 47);
@@ -158,7 +159,7 @@
             </div>
         </div>
     </nav>
-
+    
     {% if messages %}
     {% for message in messages %}
     <div class="alert alert-{{ message.tags }} alert-dismissible fade show my-0" role="alert">
