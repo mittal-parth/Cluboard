@@ -41,22 +41,6 @@ def can_user_access(user_id, action, club_id = None):
     return False
 
 
-def admin_check(user):
-    return user.info.designation == 'Admin'
-
-
-def convenor_check(user):
-    return user.info.designation == 'Convenor'
-
-
-def member_check(user):
-    return user.info.designation == 'Member'
-
-
-def admin_or_convenor_check(user):
-    return (user.info.designation == 'Convenor' or user.info.designation == 'Admin')
-
-
 @login_required(login_url='login')
 # login_url is the page to be redirected to in case the function evaluates to false
 def index(request):
@@ -70,7 +54,7 @@ def index(request):
 
 
 @login_required(login_url='login')
-@user_passes_test(admin_check, login_url='error_page')
+# @user_passes_test(admin_check, login_url='error_page')
 def user_add(request, pk):
     club = Club.objects.get(id=pk)
     user_form = CreateUserForm()
@@ -121,7 +105,7 @@ def user_delete(request, user_id):
 
 
 @login_required(login_url='login')
-@user_passes_test(admin_check, login_url='error_page')
+# @user_passes_test(admin_check, login_url='error_page')
 def club_add(request):
     # Adding a new club
     form = ClubForm()
