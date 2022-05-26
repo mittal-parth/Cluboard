@@ -24,8 +24,8 @@
             {{user_form.as_p}}
             <p><label class ="form_label">Roll No:</label> {{info_form.roll_no}}</p>
             <p>
-                <label for="id_role">Role:</label>
-                <select name="role" id="id_role" required>
+                <label for="role">Role:</label>
+                <select name="role" id="role" required>
                 <option value="" selected="">---------</option>
                 <option value="1">member</option>
                 <option value="2">convenor</option>
@@ -39,7 +39,11 @@
         <form action="" method="POST" id="existingUserForm">
             {% csrf_token %}
             {{permission_assignment_form.as_p}}
-            <button type="submit">Add User</button>
+            <button type="submit" id="submitExistingUserBtn">Add User</button>
+            <button type="button" id="spinnerBtn" style="display:none;" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Loading...
+            </button>
         </form>
     </div>
     <!-- <form action="" method="POST">
@@ -84,6 +88,8 @@
     var btnExistingUser = document.getElementById("btnExistingUser");
     var newUserFormDiv = document.getElementById("newUserFormDiv");
     var existingUserFormDiv = document.getElementById("existingUserFormDiv");
+    var addUserBtn = document.getElementById("submitExistingUserBtn");
+    var spinnerBtn = document.getElementById("spinnerBtn");
 
     // Function to toggle New User Form
     function toggleNewUser() {
@@ -125,6 +131,8 @@
     // Submit form via AJAX
     existingUserForm.addEventListener("submit", e=>{
         e.preventDefault();
+        spinnerBtn.style.display = 'block';
+        addUserBtn.style.display = 'none';
 
         const formData = new FormData();
         formData.append('csrfmiddlewaretoken',csrf);
@@ -143,12 +151,16 @@
                     alertBox.innerHtml = ``
                 }, 2000)
                 existingUserForm.reset();
+                spinnerBtn.style.display = 'none';
+                addUserBtn.style.display = 'block';
             },
             error: function(error){
                 handleAlerts('danger', 'Oops, something went wrong!')
                 setTimeout(()=>{
                     alertBox.innerHtml = ""
                 }, 2000)
+                spinnerBtn.style.display = 'none';
+                addUserBtn.style.display = 'block';
             },
             cache: false,
             contentType: false,
