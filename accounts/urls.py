@@ -6,7 +6,7 @@ from accounts import views
 urlpatterns = [
     path("signup", views.signupPage, name= "signup"),
     path("login", views.loginPage, name= "login"),
-    path("profile/<int:pk>/<int:user_id>", views.profile, name="profile"),
+    path("profile/<int:user_id>", views.profile, name="profile"),
     path("logout", views.logoutPage, name= "logout"),
 
     #They are url names and view functions are provided by default by Django
