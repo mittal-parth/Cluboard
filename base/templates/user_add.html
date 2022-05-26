@@ -4,19 +4,35 @@
 
 {% block body%}
 
-<div class="mx-4 my-2">
-    <h3>Add User</h3>
-</div>
-
-<div class="my-4 mx-4">
-
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{user_form.as_p}}
-        <p > <label class ="form_label">Roll No:</label> {{info_form.roll_no}}</p>
-        <p> <label class ="form_label">Designation:</label> {{info_form.designation}}</p>
-        <button type="submit">Add User</button>
-    </form>
+<div class="my-4 card neumorphism-card centered-div"> 
+    <div>
+        <h3 class="centered-text">Add User</h3>
+        <ul class="nav justify-content-center nav-pills">
+            <li class="nav-item">
+                <button class="nav-link active" onclick="toggleNewUser()" id="btnNewUser">New User</a>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" href="#" onclick="toggleExistingUser()" id="btnExistingUser">Existing User</a>
+            </li>
+        </ul>
+        <hr>
+    </div>
+    <div id="alertBox"></div>
+    <div id="newUserFormDiv">
+        <form action="" method="POST"  id="newUserForm">
+            {% csrf_token %}
+            {{user_form.as_p}}
+            <p><label class ="form_label">Roll No:</label> {{info_form.roll_no}}</p>
+            <button type="submit">Add User</button>
+        </form>
+    </div>
+    <div style="display:none" id="existingUserFormDiv">
+        <form action="" method="POST" id="existingUserForm">
+            {% csrf_token %}
+            {{permission_assignment_form.as_p}}
+            <button type="submit">Add User</button>
+        </form>
+    </div>
     <!-- <form action="" method="POST">
         {% csrf_token %}
         <p><label for="id_first_name">First name:</label> <input type="text" name="first_name" maxlength="150"
@@ -53,4 +69,82 @@
         <button type="submit">Add User</button>
     </form> -->
 </div>
+
+<script>
+    var btnNewUser = document.getElementById("btnNewUser");
+    var btnExistingUser = document.getElementById("btnExistingUser");
+    var newUserFormDiv = document.getElementById("newUserFormDiv");
+    var existingUserFormDiv = document.getElementById("existingUserFormDiv");
+
+    // Function to toggle New User Form
+    function toggleNewUser() {
+        btnNewUser.classList.add("active");
+        btnExistingUser.classList.remove("active");
+        newUserFormDiv.style.display = "block";
+        existingUserFormDiv.style.display = "none";
+    }
+
+    // Function to toggle Existing User Form
+    function toggleExistingUser() {
+        btnExistingUser.classList.add("active");
+        btnNewUser.classList.remove("active");
+        newUserFormDiv.style.display = "none";
+        existingUserFormDiv.style.display = "block";
+    }
+
+    // To submit existing user form
+    const alertBox = document.getElementById("alertBox");
+    const existingUserForm = document.getElementById("existingUserForm");
+    const club_id = "{{club.id}}";
+    const url = '/existing_user_add/' + club_id
+
+    // Function to show alerts
+    const handleAlerts = (type, text) => {
+        alertBox.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show my-0" role="alert">
+                                <strong>${text}<strong>
+                            </div>`
+    }
+
+    // Get respective values 
+    const club = document.getElementById("id_club");
+    const user = document.getElementById("id_user");
+    const role = document.getElementById("id_role");
+
+    // csrf token
+    const csrf = document.querySelector("input[name=csrfmiddlewaretoken]").value;
+
+    // Submit form via AJAX
+    existingUserForm.addEventListener("submit", e=>{
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('csrfmiddlewaretoken',csrf);
+        formData.append('club', club.value)
+        formData.append('user', user.value)
+        formData.append('role', role.value)
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function(response){
+                const sText = `Successfully added ${response.name} to ${response.club}`
+                handleAlerts('success', sText)
+                setTimeout(()=>{
+                    alertBox.innerHtml = ``
+                }, 2000)
+                existingUserForm.reset();
+            },
+            error: function(error){
+                handleAlerts('danger', 'Oops, something went wrong!')
+                setTimeout(()=>{
+                    alertBox.innerHtml = ""
+                }, 2000)
+            },
+            cache: false,
+            contentType: false,
+            processData: false,
+        })
+    })
+</script>
 {% endblock body%}

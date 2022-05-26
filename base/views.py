@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.urls import reverse
 from base.models import Club, Request, Item
 from accounts.models import Permission_Assignment, Permission
@@ -40,6 +41,9 @@ def can_user_access(user_id, action, club_id = None):
             return True
     return False
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
 
 @login_required(login_url='login')
 # login_url is the page to be redirected to in case the function evaluates to false
@@ -56,42 +60,83 @@ def index(request):
 @login_required(login_url='login')
 # @user_passes_test(admin_check, login_url='error_page')
 def user_add(request, club_id):
-    club = Club.objects.get(id=club_id)
-    user_form = CreateUserForm()
-    info_form = InfoForm()
-    context = {'user_form': user_form, 'info_form': info_form, 'club': club}
+    if can_user_access(request.user.id,'user_add'):
+        club = Club.objects.get(id=club_id)
+        user_form = CreateUserForm()
+        info_form = InfoForm()
 
-    if request.method == 'POST':
-        user_form = CreateUserForm(request.POST)
-        info_form = InfoForm(request.POST)
+        initial = {'club':club}
+        permission_assignment_form = PermissionAssignmentForm(initial=initial)
 
-        if user_form.is_valid():
-            user_form.save()
+        # Only current club should be displayed
+        permission_assignment_form.fields['club'].queryset = Club.objects.filter(id=club_id)
 
-            # Getting required data to display message
-            first_name = user_form.cleaned_data.get('first_name')
-            last_name = user_form.cleaned_data.get('last_name')
-            username = user_form.cleaned_data.get('username')
+        # Only non existing members should be displayed
+        existing_club_users = club.users.all()
+        permission_assignment_form.fields['user'].queryset = User.objects.exclude(id__in=[o.id for o in existing_club_users])
 
-            # Getting required data from info_form
-            roll_no = request.POST['roll_no']
-            user = User.objects.get(username=username)
+        context = {
+            'user_form': user_form,
+            'info_form': info_form, 
+            'club': club, 
+            'permission_assignment_form': permission_assignment_form
+        }
 
-            # Creating an Info object linked to this user
-            user_info = Info(user=user, roll_no=roll_no)
-            user_info.save()
+        if request.method == 'POST':
+            user_form = CreateUserForm(request.POST)
+            info_form = InfoForm(request.POST)
+            permission_assignment_form = PermissionAssignmentForm()
+            if user_form.is_valid():
+                user_form.save()
 
-            # Adding user to club
-            club.users.add(user)
+                # Getting required data to display message
+                first_name = user_form.cleaned_data.get('first_name')
+                last_name = user_form.cleaned_data.get('last_name')
+                username = user_form.cleaned_data.get('username')
 
-            messages.success(
-                request, f'Account was successfully created for {first_name} {last_name} and added to {club.club_name}!')
-            return redirect(reverse('club_view', args=[club_id]))
-        else:
-            messages.info(request, 'Error creating user')
+                # Getting required data from info_form
+                roll_no = request.POST['roll_no']
+                user = User.objects.get(username=username)
 
-    return render(request, 'user_add.html', context)
+                # Creating an Info object linked to this user
+                user_info = Info(user=user, roll_no=roll_no)
+                user_info.save()
 
+                # Adding user to club
+                club.users.add(user)
+
+                messages.success(
+                    request, f'Account was successfully created for {first_name} {last_name} and added to {club.club_name}!')
+                return redirect(reverse('club_view', args=[club_id]))
+            else:
+                messages.info(request, 'Error creating user')
+
+        return render(request, 'user_add.html', context)
+
+@login_required(login_url='login')
+def existing_user_add(request, club_id):
+    if can_user_access(request.user.id,'user_add'):
+        club = Club.objects.get(id=club_id)
+        form = PermissionAssignmentForm(request.POST)
+        
+        data = {}
+
+        if is_ajax(request=request):
+            if form.is_valid():
+                form.save()
+                user_id = request.POST['user']
+                
+                user = User.objects.get(id = user_id)
+                club.users.add(user)
+                name = user.first_name + " " + user.last_name
+                data['name'] = name
+                data['club'] = club.club_name
+                data['status'] = 'ok'
+                return JsonResponse(data)
+            else:
+                messages.info(request, 'Error adding user!')
+        
+        # return render(request, 'existing_user_add.html', context)
 
 @login_required(login_url='login')
 # @user_passes_test(admin_check, login_url='error_page')
@@ -123,7 +168,6 @@ def club_add(request):
 # @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def club_view(request, club_id):
     if can_user_access(request.user.id, "club_view", club_id):
-        # Display all users belonging to that club
         club = Club.objects.get(id=club_id)
         members = club.users.all()
         context = {'club': club, 'members': members}
