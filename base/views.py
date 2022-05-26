@@ -55,8 +55,8 @@ def index(request):
 
 @login_required(login_url='login')
 # @user_passes_test(admin_check, login_url='error_page')
-def user_add(request, pk):
-    club = Club.objects.get(id=pk)
+def user_add(request, club_id):
+    club = Club.objects.get(id=club_id)
     user_form = CreateUserForm()
     info_form = InfoForm()
     context = {'user_form': user_form, 'info_form': info_form, 'club': club}
@@ -86,7 +86,7 @@ def user_add(request, pk):
 
             messages.success(
                 request, f'Account was successfully created for {first_name} {last_name} and added to {club.club_name}!')
-            return redirect(reverse('club_view', args=[pk]))
+            return redirect(reverse('club_view', args=[club_id]))
         else:
             messages.info(request, 'Error creating user')
 
@@ -121,10 +121,10 @@ def club_add(request):
 
 @login_required(login_url='login')
 # @user_passes_test(admin_or_convenor_check, login_url='error_page')
-def club_view(request, pk):
-    if can_user_access(request.user.id, "club_view", pk):
+def club_view(request, club_id):
+    if can_user_access(request.user.id, "club_view", club_id):
         # Display all users belonging to that club
-        club = Club.objects.get(id=pk)
+        club = Club.objects.get(id=club_id)
         members = club.users.all()
         context = {'club': club, 'members': members}
 
@@ -135,20 +135,20 @@ def club_view(request, pk):
 
 @login_required(login_url='login')
 # @user_passes_test(admin_or_convenor_check, login_url='error_page')
-def item_add(request, pk):
-    if can_user_access(request.user.id, 'item_add', pk):
-        club = Club.objects.get(id=pk)
+def item_add(request, club_id):
+    if can_user_access(request.user.id, 'item_add', club_id):
+        club = Club.objects.get(id=club_id)
         initial = {'club': club}
 
         # Adding a new item
         form = ItemForm(initial=initial)
-        form.fields['club'].queryset = Club.objects.filter(id=pk)
+        form.fields['club'].queryset = Club.objects.filter(id=club_id)
         if request.method == 'POST':
             form = ItemForm(request.POST, request.FILES)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Item added successfully!')
-                return redirect(reverse('items_view', args=[pk]))
+                return redirect(reverse('items_view', args=[club_id]))
         context = {'club': club, 'form': form}
         return render(request, 'item_add.html', context)
     else:
@@ -159,10 +159,10 @@ def view_all_requests(club):
 
 @login_required(login_url='login')
 # @user_passes_test(admin_or_convenor_check, login_url='error_page')
-def items_view(request, pk):
-    if can_user_access(request.user.id, 'items_view', pk):
+def items_view(request, club_id):
+    if can_user_access(request.user.id, 'items_view', club_id):
         # Display all items belonging to that club as a carousel of cards
-        club = Club.objects.get(id=pk)
+        club = Club.objects.get(id=club_id)
         items = club.item_set.all()
         all_items = []
         n = len(items)
@@ -172,7 +172,7 @@ def items_view(request, pk):
         # Display all requests pertaining to that club
         reqs = view_all_requests(club)
 
-        if can_user_access(request.user.id, 'view_all_requests',pk) == False:
+        if can_user_access(request.user.id, 'view_all_requests',club_id) == False:
             reqs = reqs.filter(requested_by = request.user.id)
 
         context = {'club': club, 'all_items': all_items, 'reqs': reqs}
@@ -183,11 +183,11 @@ def items_view(request, pk):
 
 @login_required(login_url='login')
 # @user_passes_test(admin_or_convenor_check, login_url='error_page')
-def item_update(request, pk, item_id):
+def item_update(request, club_id, item_id):
     # Update an existing item
-    if can_user_access(request.user.id,'item_update', pk):
+    if can_user_access(request.user.id,'item_update', club_id):
         item = Item.objects.get(id=item_id)
-        club = Club.objects.get(id=pk)
+        club = Club.objects.get(id=club_id)
         form = ItemForm(instance=item)
         form.fields['club'].queryset = Club.objects.filter(id=item.club.id)
         if request.method == 'POST':
@@ -279,9 +279,9 @@ def request_reject(request, request_id):
 
 @login_required(login_url='login')
 # @user_passes_test(member_check, login_url='error_page')
-def request_add(request, pk):
-    if can_user_access(request.user.id,'request_add', pk):
-        club = Club.objects.get(id=pk)
+def request_add(request, club_id):
+    if can_user_access(request.user.id,'request_add', club_id):
+        club = Club.objects.get(id=club_id)
 
         # Pre-filling a form with required values
         initial = {'requested_by': request.user,
@@ -290,8 +290,8 @@ def request_add(request, pk):
 
         # Restrict what a member can choose from
         # Only see items pertaining to member's club
-        form.fields['item'].queryset = Item.objects.filter(club=pk)
-        form.fields['club'].queryset = Club.objects.filter(id=pk)
+        form.fields['item'].queryset = Item.objects.filter(club=club_id)
+        form.fields['club'].queryset = Club.objects.filter(id=club_id)
         form.fields['requested_by'].queryset = User.objects.filter(
             username=request.user)
 
@@ -302,7 +302,7 @@ def request_add(request, pk):
             requested_by = request.user.first_name + ' ' + request.user.last_name
 
             # Email of the convenor of the respective club
-            convenors = Permission_Assignment.objects.filter(club = pk, role__name='convenor')
+            convenors = Permission_Assignment.objects.filter(club = club_id, role__name='convenor')
             convenors_emails = convenors.values_list('user__email', flat=True) 
 
             if form.is_valid():
@@ -319,7 +319,7 @@ def request_add(request, pk):
                 except:
                     messages.info(
                         request, 'The mail has not been sent. Please check your host connection.')
-                return redirect(reverse('items_view', args=[pk]))
+                return redirect(reverse('items_view', args=[club_id]))
         context = {'club': club, 'form': form}
         return render(request, 'request_add.html', context)
     else:
