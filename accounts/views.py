@@ -48,20 +48,10 @@ def logoutPage(request):
     return redirect('login')
 
 @login_required(login_url='login')
-def profile(request, pk, user_id):
+def profile(request, user_id):
     user = User.objects.get(id = user_id)
-    club = Club.objects.get(id = pk)
-    context = {'club':club, 'user':user}
-    if request.user.info.designation == 'Member':
-        if request.user.id == user_id:
-            return render(request, 'profile.html', context)
-        else:
-            return redirect('error_page')
-    elif request.user.info.designation == 'Convenor':
-        if request.user.club_set.first().id == club.id:
-            return render(request, 'profile.html', context)
-        else:
-            return redirect('error_page')
+    clubs = user.club_set.all()
+    context = {'user':user, 'clubs': clubs}
     return render(request, 'profile.html', context)
 
 
