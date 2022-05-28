@@ -4,9 +4,10 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Count
 
 from accounts.models import Info 
-from base.models import Club
+from base.models import Request
 from .forms import CreateUserForm
 # Create your views here.
 
@@ -50,8 +51,20 @@ def logoutPage(request):
 @login_required(login_url='login')
 def profile(request, user_id):
     user = User.objects.get(id = user_id)
+    
+    # User clubs for bar chart
     clubs = user.club_set.all()
-    context = {'user':user, 'clubs': clubs}
+    clubs_list = list(clubs.values_list('club_name', flat=True))
+
+    # Requests count by club
+    user_requests = user.request_set.all()
+    requests_count_by_club = list(user_requests.values('club').annotate(dcount = Count('club')).order_by().values_list('dcount', flat = True))
+    
+    # Request count by status for pie chart
+    status_choices =  [status[0] for status in Request.status.field.choices]
+    requests_count_by_status = list(user_requests.values('status').annotate(dcount = Count('status')).order_by().values_list('dcount', flat = True))
+
+    context = {'user':user, 'clubs': clubs, 'clubs_list':clubs_list, 'requests_count_by_club':requests_count_by_club, 'status_choices':status_choices, 'requests_count_by_status':requests_count_by_status}
     return render(request, 'profile.html', context)
 
 

@@ -4,62 +4,74 @@
 {% block title %}Profile{% endblock title %}
 
 {% block body %} 
-    <div class="card neumorphism-card my-3" style="width:50%; margin: auto;">
-        <br>
-        <h3>{{user.first_name}} {{user.last_name}}</h3><br>
-        <div class="row">
-            <div class="col-md-3">
-                <p><b>Email: </b></p>
+<div class="row mx-4 my-4" style="font-size:12px;">
+    <div class="col-md-4">
+        <div class="card neumorphism-card ">
+            <h4>{{user.first_name}} {{user.last_name}}</h4><br>
+            <div class="row">
+                <div class="col-md-3">
+                    <p><b>Email : </b></p>
+                </div>
+                <div class="col-md-9">
+                    <p> <a href="mailto:{{user.email}}">{{user.email}}</a></p>
+                </div>
             </div>
-            <div class="col-md-9">
-                <p> <a href="mailto:{{user.email}}">{{user.email}}</a></p>
+            <div class="row">
+                <div class="col-md-3">
+                    <p><b>Roll No : </b></p>
+                </div>
+                <div class="col-md-9">
+                    <p>{{user.info.roll_no}}</p>
+                </div>
             </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <p><b>Clubs : </b></p>
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-striped" style="color: white">
+                        <thead class="table_head">
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Role</th>
+                            </tr>
+                        </thead>
+                        <tbody style="color: white">
+                            {% for club in clubs %}
+                            <tr>
+                                <td><a href="{% url 'club_view' club.id %}">{{club.club_name}}</p></a></td>
+                                <td>{% user_role user.id club.id %}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <br>
+            {% can_user_access request.user.id 'user_delete' as can_user_delete %}
+            {% if can_user_delete %}
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="{% url 'user_delete' user.id %}" class="button" >Delete User</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if request.user.id == user.id %}
+                <a href="{% url 'password_change' %}" style="color:#a0a1c8">Change Password</a>
+                <br>
+                <a style="color: rgb(180, 175, 175)" href="{% url 'logout' %}">Logout</a>
+            {% endif %} 
+    
         </div>
-        <div class="row">
-            <div class="col-md-3">
-                <p><b>Roll No: </b></p>
-            </div>
-            <div class="col-md-9">
-                <p>{{user.info.roll_no}}</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <p><b>Clubs: </b></p>
-            </div>
-            <div class="col-md-9">
-                <table class="table table-striped" style="color: white">
-                    <thead class="table_head">
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Role</th>
-                        </tr>
-                    </thead>
-                    <tbody style="color: white">
-                        {% for club in clubs %}
-                        <tr>
-                            <td><a href="{% url 'club_view' club.id %}">{{club.club_name}}</p></a></td>
-                            <td>{% user_role user.id club.id %}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <br>
-        <br>
-        {% can_user_access request.user.id 'user_delete' as can_user_delete %}
-        {% if can_user_delete %}
-        <div class="row">
-            <div class="col-md-3">
-                <a href="{% url 'user_delete' user.id %}" class="button" >Delete User</a>
-            </div>
-        </div>
-        {% endif %}
-        {% if request.user.id == user.id %}
-            <a href="{% url 'password_change' %}" style="color:#a0a1c8">Change Password</a>
-        {% endif %} 
-
-
     </div>
+    <div class="col-md-4">
+        {% include 'user_bar_chart.html' %}
+    </div>
+    <div class="col-md-4">
+        {% include 'user_pie_chart.html' %}
+    </div>
+</div>
+
+
+    
 {% endblock body %}
