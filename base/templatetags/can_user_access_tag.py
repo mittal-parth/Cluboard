@@ -18,11 +18,11 @@ def can_user_access(user_id, action, club_id = None):
                 user=user_id).role.permissions.all()
         except:
             Permission_Assignment.DoesNotExist
+
     if user_permissions:
         permissions_string = ""
         for permission in user_permissions:
             permissions_string += permission.actions + ","
-
         permissions_array = permissions_string.split(",")[:-1]
         if action in permissions_array:
             return True
