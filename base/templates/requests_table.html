@@ -1,0 +1,61 @@
+{% load can_user_access_tag %}
+
+<div class="container neumorphism-card">
+    <div class="centered-text">
+        <h3 class="centered-div">Requests
+        {% can_user_access user.id 'request_add' club.id as can_request_add %}
+        {% if can_request_add %}
+        <a id="add-link" href="{% url 'request_add' club.id %}">
+            <i class="fa fa-plus-circle"></i>
+        </a>
+        {% endif %}
+        </h3>
+        <hr>
+    </div>
+
+    <div class="mx-4 ">
+        <table class="table table-striped table-bordered" id="items_table" style="width: 100%">
+            <thead class="table_head">
+                <tr>
+                    <th scope="col">Requested By</th>
+                    <th scope="col">Roll No</th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Date Created</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in reqs %}
+                <tr>
+                    <td>{{ req.requested_by.first_name }} {{ req.requested_by.last_name }}</td>
+                    <td>{{ req.requested_by.info.roll_no }}</td>
+                    <td>{{ req.item|truncatewords:1 }}</td>
+                    <td>{{ req.qty }}</td>
+                    <td>{{ req.date_created }}</td>
+                    <td>
+                        {% can_user_access user.id 'request_approve' club.id as can_request_approve %}
+                        {% if can_request_approve %}
+                            {% if req.status == 'Approved' %}
+                                <button type="button" class="btn btn-success" disabled>Approved</button>
+                            {% elif req.status == 'Rejected' %}
+                                <button type="button" class="btn btn-danger" disabled>Rejected</button>
+                            {% else %}
+                                <a type="button" href="{% url 'request_approve' req.id %}" class="btn btn-success">Approve</a>
+                                <a type="button" href="{% url 'request_reject' req.id %}" class="btn btn-danger">Reject</a>
+                            {% endif %}
+                        {% else %}
+                            {{ req.status }}
+                        {% endif %} 
+                    </td>
+                </tr>
+                {% empty %}
+                <!--If there are no items-->
+                <tr>
+                    <td colspan="6">No requests yet!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
