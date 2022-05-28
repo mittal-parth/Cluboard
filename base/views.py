@@ -4,6 +4,8 @@ from django.urls import reverse
 from base.models import Club, Request, Item
 from accounts.models import Permission_Assignment, Role
 from django.contrib.auth.models import User
+from django.db.models import Count
+
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -17,7 +19,7 @@ from math import ceil
 # Functions to check user type and authorisation thereby
 
 
-def can_user_access(user_id, action, club_id = None):
+def can_user_access(user_id, action, club_id=None):
     user_permissions = ''
     if club_id:
         try:
@@ -41,6 +43,7 @@ def can_user_access(user_id, action, club_id = None):
             return True
     return False
 
+
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
@@ -60,25 +63,27 @@ def index(request):
 @login_required(login_url='login')
 # @user_passes_test(admin_check, login_url='error_page')
 def user_add(request, club_id):
-    if can_user_access(request.user.id,'user_add'):
+    if can_user_access(request.user.id, 'user_add'):
         club = Club.objects.get(id=club_id)
         user_form = CreateUserForm()
         info_form = InfoForm()
 
-        initial = {'club':club}
+        initial = {'club': club}
         permission_assignment_form = PermissionAssignmentForm(initial=initial)
 
         # Only current club should be displayed
-        permission_assignment_form.fields['club'].queryset = Club.objects.filter(id=club_id)
+        permission_assignment_form.fields['club'].queryset = Club.objects.filter(
+            id=club_id)
 
         # Only non existing members should be displayed
         existing_club_users = club.users.all()
-        permission_assignment_form.fields['user'].queryset = User.objects.exclude(id__in=[o.id for o in existing_club_users])
+        permission_assignment_form.fields['user'].queryset = User.objects.exclude(
+            id__in=[o.id for o in existing_club_users])
 
         context = {
             'user_form': user_form,
-            'info_form': info_form, 
-            'club': club, 
+            'info_form': info_form,
+            'club': club,
             'permission_assignment_form': permission_assignment_form
         }
 
@@ -101,15 +106,15 @@ def user_add(request, club_id):
                 # Creating an Info object linked to this user
                 user_info = Info(user=user, roll_no=roll_no)
                 user_info.save()
-                
+
                 # Adding user to club
                 club.users.add(user)
 
                 # Assigning role to the user
                 role_id = request.POST['role']
                 role = Role.objects.get(id=role_id)
-                print(role_id, role)
-                permission_assignment = Permission_Assignment(club = club, user = user, role = role)
+                permission_assignment = Permission_Assignment(
+                    club=club, user=user, role=role)
                 permission_assignment.save()
 
                 messages.success(
@@ -120,20 +125,21 @@ def user_add(request, club_id):
 
         return render(request, 'user_add.html', context)
 
+
 @login_required(login_url='login')
 def existing_user_add(request, club_id):
-    if can_user_access(request.user.id,'user_add'):
+    if can_user_access(request.user.id, 'user_add'):
         club = Club.objects.get(id=club_id)
         form = PermissionAssignmentForm(request.POST)
-        
+
         data = {}
 
         if is_ajax(request=request):
             if form.is_valid():
                 form.save()
                 user_id = request.POST['user']
-                
-                user = User.objects.get(id = user_id)
+
+                user = User.objects.get(id=user_id)
                 club.users.add(user)
                 name = user.first_name + " " + user.last_name
                 data['name'] = name
@@ -142,8 +148,9 @@ def existing_user_add(request, club_id):
                 return JsonResponse(data)
             else:
                 messages.info(request, 'Error adding user!')
-        
-        # return render(request, 'existing_user_add.html', context)
+
+        return render(request, 'error_page.html')
+
 
 @login_required(login_url='login')
 # @user_passes_test(admin_check, login_url='error_page')
@@ -205,8 +212,10 @@ def item_add(request, club_id):
     else:
         return redirect('error_page')
 
+
 def view_all_requests(club):
     return club.request_set.all().order_by('-date_created')
+
 
 @login_required(login_url='login')
 # @user_passes_test(admin_or_convenor_check, login_url='error_page')
@@ -223,8 +232,8 @@ def items_view(request, club_id):
         # Display all requests pertaining to that club
         reqs = view_all_requests(club)
 
-        if can_user_access(request.user.id, 'view_all_requests',club_id) == False:
-            reqs = reqs.filter(requested_by = request.user.id)
+        if can_user_access(request.user.id, 'view_all_requests', club_id) == False:
+            reqs = reqs.filter(requested_by=request.user.id)
 
         context = {'club': club, 'all_items': all_items, 'reqs': reqs}
         return render(request, 'items_view.html', context)
@@ -236,7 +245,7 @@ def items_view(request, club_id):
 # @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def item_update(request, club_id, item_id):
     # Update an existing item
-    if can_user_access(request.user.id,'item_update', club_id):
+    if can_user_access(request.user.id, 'item_update', club_id):
         item = Item.objects.get(id=item_id)
         club = Club.objects.get(id=club_id)
         form = ItemForm(instance=item)
@@ -265,6 +274,7 @@ def item_delete(request, item_id):
         return redirect(reverse('items_view', args=[club_id]))
     else:
         return redirect('error_page')
+
 
 @login_required(login_url='login')
 # @user_passes_test(convenor_check, login_url='error_page')
@@ -331,7 +341,7 @@ def request_reject(request, request_id):
 @login_required(login_url='login')
 # @user_passes_test(member_check, login_url='error_page')
 def request_add(request, club_id):
-    if can_user_access(request.user.id,'request_add', club_id):
+    if can_user_access(request.user.id, 'request_add', club_id):
         club = Club.objects.get(id=club_id)
 
         # Pre-filling a form with required values
@@ -353,8 +363,9 @@ def request_add(request, club_id):
             requested_by = request.user.first_name + ' ' + request.user.last_name
 
             # Email of the convenor of the respective club
-            convenors = Permission_Assignment.objects.filter(club = club_id, role__name='convenor')
-            convenors_emails = convenors.values_list('user__email', flat=True) 
+            convenors = Permission_Assignment.objects.filter(
+                club=club_id, role__name='convenor')
+            convenors_emails = convenors.values_list('user__email', flat=True)
 
             if form.is_valid():
                 form.save()
@@ -376,6 +387,32 @@ def request_add(request, club_id):
     else:
         return redirect('error_page')
 
+
+@login_required(login_url='login')
+def club_statistics(request, club_id):
+    if can_user_access(request.user.id, 'club_statistics',club_id):
+        club = Club.objects.get(id=club_id)
+
+        items_list = club.item_set.all()
+        club_requests = club.request_set.all()
+        requests_count_by_item = list(club_requests.values('item').annotate(
+            dcount=Count('item')).order_by().values_list('dcount', flat=True))
+
+        status_choices = list(club_requests.values('status').annotate(
+            dcount=Count('status')).order_by().values_list('status', flat=True))
+        requests_count_by_status = list(club_requests.values('status').annotate(
+            dcount=Count('status')).order_by().values_list('dcount', flat=True))
+
+        context = {
+            'items_list': items_list,
+            'requests_count_by_item': requests_count_by_item,
+            'status_choices': status_choices, 
+            'requests_count_by_status': requests_count_by_status,
+            'club':club,           
+        }
+        return render(request, 'club_statistics.html', context)
+    else:
+        return render(request, 'error_page.html')
 
 @login_required(login_url='login')
 def error_page(request):

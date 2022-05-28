@@ -2,11 +2,13 @@ from django.contrib import admin
 from django.urls import path
 from base import views
 
+
 urlpatterns = [
     path("", views.index, name="index"),
 
     path("club_view/<int:club_id>", views.club_view, name="club_view"), 
     path("club_add/", views.club_add, name="club_add"), 
+    path("club_statistics/<int:club_id>", views.club_statistics, name="club_statistics"),
 
     path("user_add/<int:club_id>", views.user_add, name="user_add"), 
     path("existing_user_add/<int:club_id>", views.existing_user_add, name="existing_user_add"), 
