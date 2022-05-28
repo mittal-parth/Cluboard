@@ -11,7 +11,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!--DataTable  -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
 
     <title>{% block title %}{% endblock title %} | InvManage</title>
     <style>
@@ -52,12 +64,25 @@
             background-color: rgb(29, 27, 27);
             color: white;
         }
+        th,
+        td {
+            color: white;
+        }
+
+        .table_head {
+            background-color: #25274D !important;
+        }
+
+        .table-striped>tbody>tr:nth-child(odd)>td,
+        .table-striped>tbody>tr:nth-child(odd)>th {
+            background-color: rgb(37, 36, 36);
+        }
 
         input[type=text],
         input[type=number],
         input[type=email],
         input[type=password],
-        textarea {
+        textarea,select {
             margin-right: 3px;
             border: 1px solid rgb(51, 47, 47);
             border-radius: 5px;
@@ -94,28 +119,36 @@
             color:rgb(240, 155, 155);
             font-size: 80%;
         }
+        .neumorphism-card {
+            border-radius: 20px;
+            background: linear-gradient(145deg, #101010, #131313);
+            box-shadow:  12px 12px 24px #0f0f0f,
+                        -12px -12px 24px #151515;
+            padding: 20px;
+        }
+
+        .centered-div {
+            width: 50%;
+            margin: auto;
+        }
+
+        .centered-text {
+            margin: auto;
+            width: 50%;
+            margin-bottom: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            {% if request.user.info.designation == 'Admin' %}
             <a class="navbar-brand" href="/">InvManage</a>
-            {% elif request.user.info.designation == 'Convenor' %}
-            <a class="navbar-brand" href="{% url 'club_view' club.id %}">InvManage</a>
-            {% else %}
-            <a class="navbar-brand" href="{% url 'index_member' request.user.club_set.first.id %}">InvManage</a>
-            {% endif %}
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Hi, {{request.user.first_name}}</a>
-                    </li>
-                </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        <a class="nav-link active" href="{% url 'profile' request.user.id %}">Profile</a>
                     </li>
                 </ul>
             </div>

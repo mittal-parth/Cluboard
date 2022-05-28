@@ -1,18 +1,33 @@
-{% extends 'main_admin.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Add Club{% endblock title %}
 
 {% block body %}
-<div class="mx-4 my-2">
-    <h3>Add Club</h3>
-</div>
 
-<div class="my-4 mx-4">
+<div class="my-4 card neumorphism-card centered-div">
 
+    <div class="my-2 centered-text">
+        <h3>Add Club</h3>
+        <hr>
+    </div>
     <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit" >Add Club</button>
+        <p><label class="form_label">Users: </label>{{form.users}}</p>
+        <p><label class="form_label" onclick="toggleConvenor()">Club: </label> {{form.club_name}}</p>
+        <p id="convenor-input" style="display: none;"><label class="form_label">Convenor: </label> {{form.club_name}}</p>
+        <p><label class="form_label">Description: </label> {{form.description}}</p>
+        <p><label class="form_label">Logo: </label> {{form.logo}}</p>
+        <button type="submit">Add Club</button>
     </form>
 </div>
+<script>
+    function toggleConvenor() {
+        var x = document.getElementById("convenor-input");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+</script>
 {% endblock body %}

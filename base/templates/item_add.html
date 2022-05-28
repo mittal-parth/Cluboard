@@ -3,7 +3,7 @@
 {% block title %}Add Item{% endblock title %}
 
 {% block body %}
-<div class="mx-4 my-4">
+<div class="my-4 container neumorphism-card" style="margin:auto; width:50%;">
     <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{form.as_p}}

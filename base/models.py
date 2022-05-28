@@ -6,6 +6,7 @@ class Club(models.Model):
     #Many Clubs have many Users
     users = models.ManyToManyField(User, blank=True, null=True)
     club_name =  models.CharField(max_length = 100)
+    description = models.TextField(blank=True, null=True)
     logo = models.ImageField(upload_to="images/", default = "")
 
     def __str__(self):

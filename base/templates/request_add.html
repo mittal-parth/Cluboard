@@ -3,7 +3,7 @@
 {% block title %}Add Request{% endblock title %}
 
 {% block body %}
-<div class="mx-4 my-4">
+<div class="card neumorphism-card my-4" style="width:50%; margin: auto;">
     <form action="" method="POST" >
         {% csrf_token %}
         <p > <label class ="form_label">Requested By: </label>{{form.requested_by}}</p>

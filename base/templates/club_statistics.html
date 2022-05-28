@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+{% load can_user_access_tag %}
+{% block title %}Stats{% endblock title %}
+{% block body %}
+    <div class="row mx-4 my-4">
+        <div class="col-md-6">
+            {% include 'club_bar_chart.html' %}
+        </div>
+        <div class="col-md-6">
+            {% include 'club_pie_chart.html' %}
+        </div>
+    </div>
+{% endblock body %}

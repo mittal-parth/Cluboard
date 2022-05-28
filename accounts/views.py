@@ -4,9 +4,10 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Count
 
 from accounts.models import Info 
-from base.models import Club
+from base.models import Request
 from .forms import CreateUserForm
 # Create your views here.
 
@@ -35,12 +36,7 @@ def loginPage(request):
         if user is not None:
             login(request, user)
             messages.success(request, 'You have been successfully logged in!')
-            if user.info.designation == 'Admin':
-                return redirect('/')
-            elif user.info.designation == 'Convenor':
-                return redirect(reverse('club_view', args = [user.club_set.first().id]))
-            else:
-                return redirect(reverse('index_member', args = [user.club_set.first().id]))
+            return redirect('/')
         else:
             messages.info(request, 'Invalid Credentials')
             return redirect('login')
@@ -53,20 +49,23 @@ def logoutPage(request):
     return redirect('login')
 
 @login_required(login_url='login')
-def profile(request, pk, user_id):
+def profile(request, user_id):
     user = User.objects.get(id = user_id)
-    club = Club.objects.get(id = pk)
-    context = {'club':club, 'user':user}
-    if request.user.info.designation == 'Member':
-        if request.user.id == user_id:
-            return render(request, 'profile.html', context)
-        else:
-            return redirect('error_page')
-    elif request.user.info.designation == 'Convenor':
-        if request.user.club_set.first().id == club.id:
-            return render(request, 'profile.html', context)
-        else:
-            return redirect('error_page')
+    
+    # User clubs for bar chart
+    clubs = user.club_set.all()
+    clubs_list = list(clubs.values_list('club_name', flat=True))
+
+    # Requests count by club
+    user_requests = user.request_set.all()
+    requests_count_by_club = list(user_requests.values('club').annotate(dcount = Count('club')).order_by().values_list('dcount', flat = True))
+    
+    # Request count by status for pie chart
+    # status_choices =  sorted([status[0] for status in Request.status.field.choices])
+    status_choices = list(user_requests.values('status').annotate(dcount = Count('status')).order_by().values_list('status', flat = True))
+    requests_count_by_status = list(user_requests.values('status').annotate(dcount = Count('status')).order_by().values_list('dcount', flat = True))
+
+    context = {'user':user, 'clubs': clubs, 'clubs_list':clubs_list, 'requests_count_by_club':requests_count_by_club, 'status_choices':status_choices, 'requests_count_by_status':requests_count_by_status}
     return render(request, 'profile.html', context)
 
 
