@@ -22,6 +22,9 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.js"></script>
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
+
     <title>{% block title %}{% endblock title %} | InvManage</title>
     <style>
         .cards {
@@ -143,14 +146,9 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="/">InvManage</a>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'profile' request.user.id %}">Hi, {{request.user.first_name}}</a>
-                    </li>
-                </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        <a class="nav-link active" href="{% url 'profile' request.user.id %}">Profile</a>
                     </li>
                 </ul>
             </div>
