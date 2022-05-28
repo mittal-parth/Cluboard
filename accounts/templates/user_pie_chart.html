@@ -14,8 +14,8 @@ $(document).ready(function() {
                 label: '# of Requests',
                 data: [{% for req in requests_count_by_status %} '{{req}}',{% endfor %}],
                 backgroundColor: [
-                    'rgba(255, 206, 86, 0.5)', // yellow
                     'rgba(26, 255, 26, 0.5)', // green
+                    'rgba(255, 206, 86, 0.5)', // yellow
                     'rgba(255, 99, 132,0.5)', // red
                     'rgba(54, 162, 235, 0.5)',
                     'rgba(75, 192, 192, 0.2)',
@@ -23,8 +23,8 @@ $(document).ready(function() {
                     'rgba(255, 159, 64, 0.2)'
                 ],
                 borderColor: [
-                    'rgba(255, 206, 86, 1)',
                     'rgba(26, 255, 26, 1)',
+                    'rgba(255, 206, 86, 1)',
                     'rgba(205, 99, 132,1)',
                     'rgba(54, 162, 235, 1)',
                     'rgba(75, 192, 192, 1)',

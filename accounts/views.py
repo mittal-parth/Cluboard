@@ -61,7 +61,8 @@ def profile(request, user_id):
     requests_count_by_club = list(user_requests.values('club').annotate(dcount = Count('club')).order_by().values_list('dcount', flat = True))
     
     # Request count by status for pie chart
-    status_choices =  [status[0] for status in Request.status.field.choices]
+    # status_choices =  sorted([status[0] for status in Request.status.field.choices])
+    status_choices = list(user_requests.values('status').annotate(dcount = Count('status')).order_by().values_list('status', flat = True))
     requests_count_by_status = list(user_requests.values('status').annotate(dcount = Count('status')).order_by().values_list('dcount', flat = True))
 
     context = {'user':user, 'clubs': clubs, 'clubs_list':clubs_list, 'requests_count_by_club':requests_count_by_club, 'status_choices':status_choices, 'requests_count_by_status':requests_count_by_status}
