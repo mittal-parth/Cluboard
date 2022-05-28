@@ -1,0 +1,70 @@
+{% load can_user_access_tag %}
+<div class="container my-5 neumorphism-card">
+    <div class="centered-text">
+        <h3 class="centered-div">Items 
+            {% can_user_access user.id 'item_add' club.id as can_item_add %}
+            {% if can_item_add %}
+                <a id="add-link" href="{% url 'item_add' club.id %}">
+                    <i class="fa fa-plus-circle"></i>
+                </a>
+            {% endif %}
+        </h3>
+        <hr>
+    </div>
+    {% for items, range, nSlides in all_items %}
+    <div id="carouselControls{{forloop.counter}}" class="carousel slide my-3" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- Slide of the carousel -->
+            <div class="carousel-item active">
+                <div class="row">
+                    <!-- start a row of items-->
+                    {% for i in items|slice:"0:" %}
+
+                    <div class="col-xs-3 col-sm-3 col-md-3">
+                        <!-- This is second coloumn of that row-->
+                        <div class="card_item" style="width: 220px;">
+                            <img src="/media/{{i.image}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px">
+                            {% comment %} <img src="{{i.image.url}}" class="card-img-top" alt="{{i.item_name}}" height="220px" width="220px"> {% endcomment %}
+                            {% can_user_access user.id 'item_update' club.id as can_item_update %}
+                            {% if can_item_update %}
+                                <a href="{% url 'item_update' club.id i.id %}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{i.item_name}}</h5>
+                                        <p class="card-text">{{i.qty}}</p>
+                                    </div>
+                                </a>
+                            {% else %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{i.item_name}}</h5>
+                                    <p class="card-text">{{i.qty}}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="row">
+                    {% endif %}
+                    {% empty %}
+                    <p>No items yet!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls{{forloop.counter}}"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="false"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselControls{{forloop.counter}}"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="false"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    {% endfor %}
+</div>
