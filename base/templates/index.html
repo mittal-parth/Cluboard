@@ -7,7 +7,8 @@
 <div class="container neumorphism-card my-5" >
     <div class="centered-text">
         <h3 class="centered-div">Clubs
-            {% can_user_access user.id 'club_add' club.id as can_club_add %}
+            {% can_user_access user.id 'club_add' 1 as can_club_add %}
+
             {% if can_club_add %} 
                 <a id="add-link" href="{% url 'club_add' %}"><i class="fa fa-plus-circle"></i></a>
             {% endif %}

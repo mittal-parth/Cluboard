@@ -18,7 +18,7 @@ from math import ceil
 
 # Functions to check user type and authorisation thereby
 
-
+# Function to check if user can access a view method
 def can_user_access(user_id, action, club_id=None):
     user_permissions = ''
     if club_id:
@@ -33,6 +33,9 @@ def can_user_access(user_id, action, club_id=None):
                 user=user_id).role.permissions.all()
         except:
             Permission_Assignment.DoesNotExist
+    
+    # Find permission in the permissions string of the
+    # associated role
     if user_permissions:
         permissions_string = ""
         for permission in user_permissions:
@@ -43,7 +46,7 @@ def can_user_access(user_id, action, club_id=None):
             return True
     return False
 
-
+# Function to check if a request is AJAX
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
@@ -61,9 +64,8 @@ def index(request):
 
 
 @login_required(login_url='login')
-# @user_passes_test(admin_check, login_url='error_page')
 def user_add(request, club_id):
-    if can_user_access(request.user.id, 'user_add'):
+    if can_user_access(request.user.id, 'user_add', club_id):
         club = Club.objects.get(id=club_id)
         user_form = CreateUserForm()
         info_form = InfoForm()
@@ -124,11 +126,13 @@ def user_add(request, club_id):
                 messages.info(request, 'Error creating user')
 
         return render(request, 'user_add.html', context)
+    else:
+        return render(request, 'error_page.html')
 
 
 @login_required(login_url='login')
 def existing_user_add(request, club_id):
-    if can_user_access(request.user.id, 'user_add'):
+    if can_user_access(request.user.id, 'user_add', club_id):
         club = Club.objects.get(id=club_id)
         form = PermissionAssignmentForm(request.POST)
 
@@ -153,7 +157,6 @@ def existing_user_add(request, club_id):
 
 
 @login_required(login_url='login')
-# @user_passes_test(admin_check, login_url='error_page')
 def user_delete(request, user_id):
     if can_user_access(request.user.id, 'user_delete'):
         user = User.objects.get(id=user_id)
@@ -164,7 +167,6 @@ def user_delete(request, user_id):
 
 
 @login_required(login_url='login')
-# @user_passes_test(admin_check, login_url='error_page')
 def club_add(request):
     # Adding a new club
     form = ClubForm()
@@ -179,7 +181,6 @@ def club_add(request):
 
 
 @login_required(login_url='login')
-# @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def club_view(request, club_id):
     if can_user_access(request.user.id, "club_view", club_id):
         club = Club.objects.get(id=club_id)
@@ -192,7 +193,6 @@ def club_view(request, club_id):
 
 
 @login_required(login_url='login')
-# @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def item_add(request, club_id):
     if can_user_access(request.user.id, 'item_add', club_id):
         club = Club.objects.get(id=club_id)
@@ -218,7 +218,6 @@ def view_all_requests(club):
 
 
 @login_required(login_url='login')
-# @user_passes_test(admin_or_convenor_check, login_url='error_page')
 def items_view(request, club_id):
     if can_user_access(request.user.id, 'items_view', club_id):
         # Display all items belonging to that club as a carousel of cards
@@ -242,7 +241,7 @@ def items_view(request, club_id):
 
 
 @login_required(login_url='login')
-# @user_passes_test(admin_or_convenor_check, login_url='error_page')
+
 def item_update(request, club_id, item_id):
     # Update an existing item
     if can_user_access(request.user.id, 'item_update', club_id):
@@ -264,7 +263,7 @@ def item_update(request, club_id, item_id):
 
 
 @login_required(login_url='login')
-# @user_passes_test(admin_or_convenor_check, login_url='error_page')
+
 def item_delete(request, item_id):
     item = Item.objects.get(id=item_id)
     club_id = item.club.id
@@ -381,6 +380,7 @@ def request_add(request, club_id):
                 except:
                     messages.info(
                         request, 'The mail has not been sent. Please check your host connection.')
+                messages.success(request, 'Request created successfully!')
                 return redirect(reverse('items_view', args=[club_id]))
         context = {'club': club, 'form': form}
         return render(request, 'request_add.html', context)
@@ -395,11 +395,15 @@ def club_statistics(request, club_id):
 
         items_list = club.item_set.all()
         club_requests = club.request_set.all()
+
+        # Requests count grouped by item
         requests_count_by_item = list(club_requests.values('item').annotate(
             dcount=Count('item')).order_by().values_list('dcount', flat=True))
 
         status_choices = list(club_requests.values('status').annotate(
             dcount=Count('status')).order_by().values_list('status', flat=True))
+
+        # Requests count grouped by status
         requests_count_by_status = list(club_requests.values('status').annotate(
             dcount=Count('status')).order_by().values_list('dcount', flat=True))
 
