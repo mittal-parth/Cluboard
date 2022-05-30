@@ -263,7 +263,6 @@ def item_update(request, club_id, item_id):
 
 
 @login_required(login_url='login')
-
 def item_delete(request, item_id):
     item = Item.objects.get(id=item_id)
     club_id = item.club.id
@@ -276,7 +275,6 @@ def item_delete(request, item_id):
 
 
 @login_required(login_url='login')
-# @user_passes_test(convenor_check, login_url='error_page')
 def request_approve(request, request_id):
     # Approve the request if there is sufficient quantity available
     req = Request.objects.get(id=request_id)
@@ -311,7 +309,6 @@ def request_approve(request, request_id):
 
 
 @login_required(login_url='login')
-# @user_passes_test(convenor_check, login_url='error_page')
 def request_reject(request, request_id):
     req = Request.objects.get(id=request_id)
     club_id = req.item.club.id
@@ -338,7 +335,6 @@ def request_reject(request, request_id):
 
 
 @login_required(login_url='login')
-# @user_passes_test(member_check, login_url='error_page')
 def request_add(request, club_id):
     if can_user_access(request.user.id, 'request_add', club_id):
         club = Club.objects.get(id=club_id)
