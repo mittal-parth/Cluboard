@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv('SECRET_KEY_InvManage')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['inv-manage-college-clubs.herokuapp.com', '127.0.0.1', 'localhost', 'invmanagecollegeclubsparth.azurewebsites.net/']
+ALLOWED_HOSTS = ['inv-manage-college-clubs.herokuapp.com', '127.0.0.1', 'localhost', 'inv-manage-clubs-parth.azurewebsites.net/']
 
 
 # Application definition
@@ -127,6 +127,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 STATIC_URL = '/static/'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 #Managing Mailing
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
