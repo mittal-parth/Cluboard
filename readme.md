@@ -16,7 +16,7 @@ It also supports email notifications to different stakeholders and useful aggreg
 2. [Tech Stack](https://github.com/mittal-parth/Cluboard/blob/main/readme.md#tech-stack)
 3. [Contributing](https://github.com/mittal-parth/Cluboard/blob/main/readme.md#-contributing-)
 4. [Installation Guide](https://github.com/mittal-parth/Cluboard/blob/main/readme.md#installation-guide)
-5. 5. [Sample Git Workflow](https://github.com/mittal-parth/Cluboard/blob/main/readme.md#-sample-git-workflow-)
+5. [Sample Git Workflow](https://github.com/mittal-parth/Cluboard/blob/main/readme.md#-sample-git-workflow-)
 6. [Implemented Features](https://github.com/mittal-parth/Cluboard/blob/main/readme.md#implemented-features)
 7. [References](https://github.com/mittal-parth/Cluboard/blob/main/readme.md#references)
 <br>
