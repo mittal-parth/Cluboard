@@ -20,13 +20,16 @@ It also supports email notifications to different stakeholders and useful aggreg
 6. [Sample Git Workflow](https://github.com/mittal-parth/Inventory-Management-Django/edit/contributing/readme.md#-sample-git-workflow-)
 7. [References](https://github.com/mittal-parth/Inventory-Management-Django/edit/contributing/readme.md#references)
 <br>
-<h2>Member and Convenor Demo</h2>
+
+<h2>Demos</h2>
+
+<h3>Member and Convenor Demo</h3>
 
 https://user-images.githubusercontent.com/76661350/170917181-f410ddcc-c658-45ff-9e49-1363ffe91c70.mp4
 
 <br>
 
-<h2>Admin Demo</h2>
+<h3>Admin Demo</h3>
 
 https://user-images.githubusercontent.com/76661350/170917170-75b93a30-f63a-4141-b08e-fcf6b494deaf.mp4
 
