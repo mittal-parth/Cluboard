@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-n%soswvt@-)o2@i_q5q%6=gkh)tkl)y6o*_1-s-b9n#+fw5(@y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['inv-manage-college-clubs.herokuapp.com/', '127.0.0.1']
+ALLOWED_HOSTS = ['inv-manage-college-clubs.herokuapp.com', '127.0.0.1', 'localhost', 'inv-manage-clubs-parth.azurewebsites.net/']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -120,7 +121,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 STATIC_URL = '/static/'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 #Managing Mailing
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
