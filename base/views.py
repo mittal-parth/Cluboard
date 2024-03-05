@@ -168,14 +168,17 @@ def user_delete(request, user_id):
 
 @login_required(login_url='login')
 def club_add(request):
-    # Adding a new club
-    form = ClubForm()
-    if request.method == 'POST':
-        form = ClubForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Club added successfully!')
-            return redirect('/')
+    # Adding a new club    
+    if can_user_access(request.user.id, 'club_add'): # preventing convenor and member to access add clubs 
+        form = ClubForm()
+        if request.method == 'POST':
+            form = ClubForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Club added successfully!')
+                return redirect('/')
+    else:
+        return redirect('error_page')      
     context = {'form': form}
     return render(request, 'club_add.html', context)
 
